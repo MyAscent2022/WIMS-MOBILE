@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:background="@drawable/card_uld">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/manrope"
+            android:gravity="center_horizontal|top"
+            android:lineSpacingExtra="-9sp"
+            android:text="ULD NO."
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/uld_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="-9sp"
+            android:text="FLIGHT NUMBER"
+            android:textColor="#FFB800"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:fontFamily="@font/manrope"
+            android:gravity="center" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center_horizontal|top"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="ULD TYPE"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/uld_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="PALLET"
+                    android:textColor="#263238"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center_horizontal|top"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="TOTAL WEIGHT"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/current_total"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="0"
+                        android:textColor="#263238"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="/"
+                        android:textColor="#263238"
+                        android:layout_marginRight="10dp"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/total"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="0"
+                        android:textColor="#263238"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center_horizontal|top"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="PCS (TC/SL/AP)"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/tc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="0"
+                        android:textColor="#263238"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="|"
+                        android:textColor="#9A9A9A"
+                        android:layout_marginRight="10dp"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/sl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="0"
+                        android:textColor="#263238"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="|"
+                        android:textColor="#9A9A9A"
+                        android:layout_marginRight="10dp"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/ap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="-9sp"
+                        android:text="0"
+                        android:textColor="#263238"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:background="@drawable/card_pending">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PENDING"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:fontFamily="@font/manrope"
+            android:textColor="#EF9A33"/>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HAWB"
+                    android:textSize="12sp"
+                    android:textColor="#EF9A33"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/hawb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HAWB"
+                    android:textSize="16sp"
+                    android:textColor="#354546"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="NO. OF PIECES"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:textColor="#EF9A33"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/no_of_pieces"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HAWB"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textColor="#354546"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="WEIGHT"
+                    android:gravity="right"
+                    android:textSize="12sp"
+                    android:textColor="#EF9A33"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HAWB"
+                    android:gravity="right"
+                    android:textSize="16sp"
+                    android:textColor="#354546"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

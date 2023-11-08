@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/mawb_card"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp"
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:textStyle="bold"
+                    android:gravity="left"
+                    android:lineSpacingExtra="-9sp"
+                    android:textColor="#EF9A33"
+                    android:textSize="12sp"
+                    android:text="INBOUND STATUS" />
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="ONGOING"
+                    android:textColor="#EF9A33"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="left" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <LinearLayout
+                        android:layout_width="125dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:textStyle="bold"
+                            android:lineSpacingExtra="-9sp"
+                            android:textColor="#EF9A33"
+                            android:textSize="12sp"
+                            android:text="MAWB NO." />
+
+                        <TextView
+                            android:id="@+id/mawb_no"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:lineSpacingExtra="-9sp"
+                            android:textStyle="bold"
+                            android:textColor="#354546"
+                            android:textSize="16sp"
+                            android:text="ULD NO." />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="227dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:textStyle="bold"
+                            android:lineSpacingExtra="-9sp"
+                            android:textColor="#EF9A33"
+                            android:textSize="12sp"
+                            android:text="CHECKER" />
+
+                        <TextView
+                            android:id="@+id/checker"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:lineSpacingExtra="-9sp"
+                            android:textStyle="bold"
+                            android:textColor="#263238"
+                            android:textSize="16sp"
+                            android:text="ULD NO." />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <LinearLayout
+                        android:layout_width="125dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:textStyle="bold"
+                            android:lineSpacingExtra="-9sp"
+                            android:textColor="#EF9A33"
+                            android:textSize="12sp"
+                            android:text="HAWB NO." />
+
+                        <TextView
+                            android:id="@+id/hawb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:lineSpacingExtra="-9sp"
+                            android:textStyle="bold"
+                            android:textColor="#354546"
+                            android:textSize="16sp"
+                            android:text="ULD NO." />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="227dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:textStyle="bold"
+                            android:lineSpacingExtra="-9sp"
+                            android:textColor="#EF9A33"
+                            android:textSize="12sp"
+                            android:text="LOCATION NO." />
+
+                        <TextView
+                            android:id="@+id/location_no"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope"
+                            android:gravity="left"
+                            android:lineSpacingExtra="-9sp"
+                            android:textStyle="bold"
+                            android:textColor="#263238"
+                            android:textSize="16sp"
+                            android:text="ULD NO." />
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:background="@drawable/info_card">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope"
+                android:gravity="left"
+                android:lineSpacingExtra="-9sp"
+                android:textStyle="bold"
+                android:textColor="#263238"
+                android:textSize="12sp"
+                android:text="NO. OF ACTUAL PIECES" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bg"
+                android:layout_marginTop="5dp"
+                android:hint="Input Actual Value"
+                android:fontFamily="@font/manrope"
+                android:paddingLeft="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="WEIGHT" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:textStyle="bold"
+                        android:textColor="#354546"
+                        android:textSize="16sp"
+                        android:background="@drawable/search_bg"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="15dp">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="LENGTH" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:lineSpacingExtra="-9sp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:textStyle="bold"
+                        android:textColor="#263238"
+                        android:background="@drawable/search_bg"
+                        android:textSize="16sp"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="WIDTH" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:textStyle="bold"
+                        android:textColor="#354546"
+                        android:textSize="16sp"
+                        android:background="@drawable/search_bg"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="15dp">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="HEIGHT" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:lineSpacingExtra="-9sp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:textStyle="bold"
+                        android:textColor="#263238"
+                        android:background="@drawable/search_bg"
+                        android:textSize="16sp"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope"
+                android:gravity="left"
+                android:lineSpacingExtra="-9sp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textColor="#263238"
+                android:textSize="12sp"
+                android:text="NO. OF ACTUAL PIECES" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:lineSpacingExtra="-9sp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textColor="#354546"
+                android:textSize="16sp"
+                android:background="@drawable/search_bg"
+                android:hint="0" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="EXCESS PIECES" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:textStyle="bold"
+                        android:textColor="#354546"
+                        android:textSize="16sp"
+                        android:background="@drawable/search_bg"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="15dp">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="SHORT LANDED PIECES" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:lineSpacingExtra="-9sp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:textStyle="bold"
+                        android:textColor="#263238"
+                        android:background="@drawable/search_bg"
+                        android:textSize="16sp"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="CARGO CLASS" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:lineSpacingExtra="-9sp"
+                        android:textStyle="bold"
+                        android:textColor="#354546"
+                        android:textSize="16sp"
+                        android:background="@drawable/search_bg"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="15dp">
+
+                    <TextView
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:gravity="left"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="-9sp"
+                        android:textColor="#01256D"
+                        android:textSize="12sp"
+                        android:text="CARGO STATUS" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope"
+                        android:lineSpacingExtra="-9sp"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:textStyle="bold"
+                        android:textColor="#263238"
+                        android:background="@drawable/search_bg"
+                        android:textSize="16sp"
+                        android:hint="0" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/cargo_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/upload_pic"
+                android:layout_marginTop="20dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cancel_btn"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/enter_btn"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/check"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#FFFFFF"
+                    android:lineSpacingExtra="-5sp"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

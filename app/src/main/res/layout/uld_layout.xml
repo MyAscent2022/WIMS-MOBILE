@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/extra_card"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope"
+                android:gravity="left"
+                android:lineSpacingExtra="-9sp"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp"
+                android:text="FLIGHT NO." />
+
+            <TextView
+                android:id="@+id/flight_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="-9sp"
+                android:text="ONGOING"
+                android:textColor="#0038A8"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:fontFamily="@font/manrope"
+                android:gravity="left" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope"
+                android:gravity="right"
+                android:lineSpacingExtra="-9sp"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp"
+                android:text="NO. OF ULD" />
+
+            <TextView
+                android:id="@+id/no_of_pieces"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="-9sp"
+                android:text="ONGOING"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:fontFamily="@font/manrope"
+                android:gravity="right" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/search_bg"
+        android:layout_marginTop="10dp"
+        android:defaultFocusHighlightEnabled="true"/>
+
+    <ListView
+        android:id="@+id/list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:divider="#00000000"
+        android:dividerHeight="10dp">
+
+    </ListView>
+
+</LinearLayout>

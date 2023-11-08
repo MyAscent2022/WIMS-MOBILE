@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    tools:context=".ui.storeCargo.storage.view.StorageCargo">
+
+    <include
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="10dp"
+        layout="@layout/header_layout"
+        android:id="@+id/header_layout"/>
+
+
+    <include
+        android:id="@+id/mawb_list"
+        layout="@layout/mawb_storage"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/mawb_gallery"
+        layout="@layout/mawb_gallery"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/cargo_details"
+        layout="@layout/cargo_details"
+        android:visibility="visible"/>
+
+
+</LinearLayout>

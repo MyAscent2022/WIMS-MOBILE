@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.receiveCargo.view.ReceiveCargo">
+
+    <include
+        android:visibility="visible"
+        layout="@layout/header_layout"
+        android:id="@+id/header_layout"/>
+
+    <include
+        layout="@layout/flight_list_layout"
+        android:visibility="visible"
+        android:id="@+id/flight_list_layout"/>
+
+    <include
+        android:id="@+id/flight_details_layout"
+        layout="@layout/flight_details_layout"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/uld_layout"
+        layout="@layout/uld_layout"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/mawb_list_layout"
+        layout="@layout/mawb_list_layout"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/hawb_list_layout"
+        layout="@layout/hawb_list_layout"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/mawb_details"
+        layout="@layout/mawb_details"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/cargo_images_layout"
+        layout="@layout/cargo_images_layout"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/uld_images_layout"
+        layout="@layout/uld_images_layout"
+        android:visibility="gone"/>
+
+</LinearLayout>
