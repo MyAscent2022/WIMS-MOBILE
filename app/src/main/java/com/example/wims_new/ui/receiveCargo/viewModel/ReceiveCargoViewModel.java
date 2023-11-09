@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.example.wims_new.BuildConfig;
 import com.example.wims_new.R;
@@ -12,6 +13,7 @@ import com.example.wims_new.apiCall.ApiCall;
 import com.example.wims_new.apiCall.ServiceGenerator;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityReceiveCargoBinding;
+import com.example.wims_new.model.CargoConditionModel;
 import com.example.wims_new.model.FlightsModel;
 import com.example.wims_new.model.FlightsResponse;
 import com.example.wims_new.model.MawbModel;
@@ -40,6 +42,7 @@ public class ReceiveCargoViewModel {
     private List<UldModel> ulds;
     private MawbResponse mawbResp;
     private List<MawbModel> mawbs;
+    private List<CargoConditionModel> condition;
 
     public void landedFlights(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         resp = new FlightsResponse();
@@ -285,4 +288,55 @@ public class ReceiveCargoViewModel {
         binding.mawbDetails.hawb.setText(selectedMawbs.getHawbNumber());
         binding.mawbDetails.locationNo.setText("");
     }
+
+    public void getCargoConditionList(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        mawbResp = new MawbResponse();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<MawbResponse> call = services.getCargoCondition();
+        call.enqueue(new Callback<MawbResponse>() {
+            @Override
+            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+                dialog.cancel();
+
+                try {
+                    condition = new ArrayList<>();
+                    if (response.code() == 200) {
+                        mawbResp = response.body();
+                        if (mawbResp.getStatusCode() == 200) {
+                            condition = mawbResp.getCondition();
+
+                            binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+                            binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+
+                        } else {
+                            alertsAndLoaders.showAlert(1, mawbResp.getMessage(), context, activity, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+                    }
+//                    activity.getMawbs(mawbs);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+    }
+
+    private String[] cargoCondition(List<CargoConditionModel> condition){
+        String[] ar = new String[condition.size()];
+        for(int i =0; i < condition.size(); i++){
+            ar[i] = condition.get(i).getCondition();
+        }
+        return ar;
+    }
+
 }

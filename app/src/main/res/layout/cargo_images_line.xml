@@ -59,15 +59,14 @@
             android:textSize="11sp"
             android:text="CARGO CONDITION" />
 
+
         <Spinner
             android:id="@+id/spinner1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/search_bg"
             android:layout_marginRight="5dp"
-            android:spinnerMode="dropdown"/>
-
-
+            android:background="@drawable/search_bg"
+            android:spinnerMode="dropdown" />
 
         <TextView
             android:layout_width="match_parent"

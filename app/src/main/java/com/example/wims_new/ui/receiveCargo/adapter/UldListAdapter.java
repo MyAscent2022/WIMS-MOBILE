@@ -48,10 +48,10 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
             TextView te_txt = convertView.findViewById(R.id.total);
 
             uld_no_txt.setText(uld_no);
-            uld_type_txt.setText(uld_type);
-            tc_txt.setText(tc);
-            sl_txt.setText(sl);
-            te_txt.setText(te);
+//            uld_type_txt.setText(uld_type);
+//            tc_txt.setText(tc);
+//            sl_txt.setText(sl);
+//            te_txt.setText(te);
 
         } catch (Exception e) {
             e.printStackTrace();

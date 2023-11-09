@@ -39,9 +39,9 @@ public class HawbListAdapter extends ArrayAdapter<MawbModel> {
             TextView pieces_txt = convertView.findViewById(R.id.no_of_pieces);
             TextView weight_txt = convertView.findViewById(R.id.weight);
 
-            hawb_no_txt.setText(hawb_no);
-            pieces_txt.setText(pieces);
-            weight_txt.setText((int) weight);
+//            hawb_no_txt.setText(hawb_no);
+//            pieces_txt.setText(pieces);
+//            weight_txt.setText((int) weight);
         } catch (Exception e) {
             e.printStackTrace();
         }
