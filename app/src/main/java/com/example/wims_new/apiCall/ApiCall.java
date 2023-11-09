@@ -21,6 +21,9 @@ public interface ApiCall {
     @GET("mawbs_per_uld")
     Call<MawbResponse> getMawbs(@Query("registry_number") String registry_number);
 
+    @GET("get_cargo_condition")
+    Call<MawbResponse> getCargoCondition();
+
     @GET("hawbs_per_mawb")
     Call<MawbResponse> getHawbs(@Query("registry_number") String registry_number, @Query("mawb_number") String mawb_number);
 

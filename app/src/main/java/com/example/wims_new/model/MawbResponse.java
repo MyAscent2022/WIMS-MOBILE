@@ -1,12 +1,31 @@
 package com.example.wims_new.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class MawbResponse implements Serializable {
     String message;
     String status;
     int statusCode;
     MawbData data;
+    CargoConditionData conditionData;
+    List<CargoConditionModel> condition;
+
+    public List<CargoConditionModel> getCondition() {
+        return condition;
+    }
+
+    public void setCondition(List<CargoConditionModel> condition) {
+        this.condition = condition;
+    }
+
+    public CargoConditionData getConditionData() {
+        return conditionData;
+    }
+
+    public void setConditionData(CargoConditionData conditionData) {
+        this.conditionData = conditionData;
+    }
 
     public String getMessage() {
         return message;
