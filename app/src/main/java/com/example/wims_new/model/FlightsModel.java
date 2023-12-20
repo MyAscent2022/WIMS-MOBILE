@@ -7,18 +7,12 @@ import java.sql.Timestamp;
 public class FlightsModel implements Serializable {
 
     long id;
-    String userId;
     int flightId;
-    String status;
-    String cargoStatus;
-    String tbs;
-    String tff;
-    String createdAt;
-    int createdById;
-    String modifiedAt;
-    int modifiedById;
-    int uldId;
-    String mawbNumber;
+    String flightStatus;
+    String travelStatus;
+    String airline;
+    String entryNumber;
+    String arrivalDate;
     String flightNumber;
     String registryNumber;
 
@@ -30,14 +24,6 @@ public class FlightsModel implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public int getFlightId() {
         return flightId;
     }
@@ -46,84 +32,44 @@ public class FlightsModel implements Serializable {
         this.flightId = flightId;
     }
 
-    public String getStatus() {
-        return status;
+    public String getFlightStatus() {
+        return flightStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setFlightStatus(String flightStatus) {
+        this.flightStatus = flightStatus;
     }
 
-    public String getCargoStatus() {
-        return cargoStatus;
+    public String getTravelStatus() {
+        return travelStatus;
     }
 
-    public void setCargoStatus(String cargoStatus) {
-        this.cargoStatus = cargoStatus;
+    public void setTravelStatus(String travelStatus) {
+        this.travelStatus = travelStatus;
     }
 
-    public String getTbs() {
-        return tbs;
+    public String getAirline() {
+        return airline;
     }
 
-    public void setTbs(String tbs) {
-        this.tbs = tbs;
+    public void setAirline(String airline) {
+        this.airline = airline;
     }
 
-    public String getTff() {
-        return tff;
+    public String getEntryNumber() {
+        return entryNumber;
     }
 
-    public void setTff(String tff) {
-        this.tff = tff;
+    public void setEntryNumber(String entryNumber) {
+        this.entryNumber = entryNumber;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getArrivalDate() {
+        return arrivalDate;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setModifiedAt(String modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
-
-    public int getCreatedById() {
-        return createdById;
-    }
-
-    public void setCreatedById(int createdById) {
-        this.createdById = createdById;
-    }
-
-    public String getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public int getModifiedById() {
-        return modifiedById;
-    }
-
-    public void setModifiedById(int modifiedById) {
-        this.modifiedById = modifiedById;
-    }
-
-    public int getUldId() {
-        return uldId;
-    }
-
-    public void setUldId(int uldId) {
-        this.uldId = uldId;
-    }
-
-    public String getMawbNumber() {
-        return mawbNumber;
-    }
-
-    public void setMawbNumber(String mawbNumber) {
-        this.mawbNumber = mawbNumber;
+    public void setArrivalDate(String arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 
     public String getFlightNumber() {

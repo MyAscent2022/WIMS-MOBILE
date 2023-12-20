@@ -31,7 +31,6 @@ public class MawbModel implements Serializable {
     String informationPartA;
     int lineNumber;
     String marksOfSeals;
-    String mawbNo;
     String mawbNumber;
     String modifiedAt;
     String notifyPartyAddress;
@@ -69,6 +68,16 @@ public class MawbModel implements Serializable {
     String registrationDate;
     String registrationNumber;
     String cargoStatus;
+
+    boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public long getId() {
         return id;
@@ -260,14 +269,6 @@ public class MawbModel implements Serializable {
 
     public void setMarksOfSeals(String marksOfSeals) {
         this.marksOfSeals = marksOfSeals;
-    }
-
-    public String getMawbNo() {
-        return mawbNo;
-    }
-
-    public void setMawbNo(String mawbNo) {
-        this.mawbNo = mawbNo;
     }
 
     public String getMawbNumber() {

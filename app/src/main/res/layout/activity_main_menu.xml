@@ -9,101 +9,274 @@
     android:background="#F6F6F6">
 
     <RelativeLayout
-        android:id="@+id/wrapper"
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="46dp"
+        android:layout_height="114dp"
+        android:layout_marginTop="@dimen/_40sdp"
         android:clipToOutline="true">
 
-        <RelativeLayout
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="114dp"
-            android:clipToOutline="true">
-
-            <RelativeLayout
-                android:id="@+id/logo"
-                android:layout_width="206dp"
-                android:layout_height="64dp"
-                android:clipToOutline="true"
-                android:layout_marginTop="25dp"
-                android:layout_marginLeft="100dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/paircargologo"/>
-
-                    <ImageView
-                        android:layout_width="125dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/wims"/>
-                </LinearLayout>
-
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/header"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:clipToOutline="true"
-            android:gravity="center">
+        <LinearLayout
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginLeft="@dimen/_80sdp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_51sdp"
                 android:layout_height="match_parent"
-                android:src="@drawable/mainmenu" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/form"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/title"
-            android:layout_marginTop="5dp"
-            android:clipToOutline="true">
-
+                android:background="@drawable/paircargologo">
+            </ImageView>
             <LinearLayout
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/wims"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_1sdp"
+                android:text="WIMS"
+                android:textAppearance="@style/wims"
+                android:textStyle="bold">
 
-                <ImageView
-                    android:id="@+id/receive_cargo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/receive_cargo"/>
+            </TextView>
 
-                <ImageView
-                    android:id="@+id/store_cargo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/store_cargo" />
-            </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
 
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/manrope"
+            android:gravity="center"
+            android:text="Main Menu"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18ssp"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_130sdp"
+            android:layout_margin="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/receive_cargo"
+                    android:layout_width="@dimen/_110sdp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_7sdp"
+                    android:background="@drawable/white_bg_yellow_border"
+                    app:cardCornerRadius="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_116sdp"
+                        android:background="@drawable/white_bg_yellow_border">
+
+                    </ImageView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_12sdp"
+                            android:gravity="right">
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".4"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="@dimen/_47sdp"
+                                android:layout_height="@dimen/_47sdp"
+                                android:background="@drawable/icon_receive" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".6"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_18sdp"
+                                android:gravity="center"
+                                android:text="RECEIVE"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/_18ssp"
+                                app:autoSizeMinTextSize="@dimen/_5ssp"
+                                app:autoSizeStepGranularity="@dimen/_1ssp"
+                                app:autoSizeTextType="uniform" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="CARGO"
+                                android:textColor="@color/blue"
+                                android:textStyle="bold">
+
+                            </TextView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/store_cargo"
+                    android:layout_width="@dimen/_110sdp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_7sdp"
+                    android:background="@drawable/white_bg_yellow_border"
+                    app:cardCornerRadius="@dimen/_5sdp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_116sdp"
+                        android:background="@drawable/white_bg_yellow_border">
+
+                    </ImageView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_12sdp"
+                            android:gravity="right">
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".4"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="@dimen/_47sdp"
+                                android:layout_height="@dimen/_47sdp"
+                                android:background="@drawable/icon_storage" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".6"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_18sdp"
+                                android:gravity="center"
+                                android:text="STORE"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/_18ssp"
+                                app:autoSizeMinTextSize="@dimen/_5ssp"
+                                app:autoSizeStepGranularity="@dimen/_1ssp"
+                                app:autoSizeTextType="uniform" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="CARGO"
+                                android:textColor="@color/blue"
+                                android:textStyle="bold">
+
+                            </TextView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_130sdp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/layout_logout"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/sign_out_squre">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="Log-out">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

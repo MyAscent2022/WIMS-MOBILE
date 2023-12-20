@@ -33,10 +33,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/flight_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="-9sp"
-                    android:text="ONGOING"
+                    android:text="FLIGHT NO"
                     android:textColor="#0038A8"
                     android:textStyle="bold"
                     android:textSize="24sp"
@@ -61,10 +62,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/class1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="-9sp"
-                    android:text="PENDING"
+                    android:text="CLASS"
                     android:textColor="#354546"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -97,10 +99,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/mawb_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="-9sp"
-                    android:text="00:00"
+                    android:text="MAWB NO"
                     android:textColor="#263238"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -124,10 +127,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/hawb_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="-9sp"
-                    android:text="00:00"
+                    android:text="HAWB NO"
                     android:textColor="#263238"
                     android:textStyle="bold"
                     android:textSize="16sp"
@@ -150,10 +154,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/pcs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="-9sp"
-                    android:text="00:00"
+                    android:text="PCS"
                     android:textColor="#263238"
                     android:textStyle="bold"
                     android:textSize="16sp"

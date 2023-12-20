@@ -32,10 +32,10 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             String uld_no = getItem(position).getUldNo();
-            int uld_type = getItem(position).getUldType();
+            String uld_type = getItem(position).getUldType();
             int tc = getItem(position).getTotalCount();
             int sl = getItem(position).getShortLanded();
-            int te = getItem(position).getTotalExpected();
+            int te = getItem(position).getTotalWeight();
 //            String uld_type = getItem(position).getUldTypeModel().getType();
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -43,15 +43,13 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
 
             TextView uld_no_txt = convertView.findViewById(R.id.uld_no);
             TextView uld_type_txt = convertView.findViewById(R.id.uld_type);
-            TextView tc_txt = convertView.findViewById(R.id.tc);
-            TextView sl_txt = convertView.findViewById(R.id.sl);
             TextView te_txt = convertView.findViewById(R.id.total);
 
             uld_no_txt.setText(uld_no);
             uld_type_txt.setText(uld_type);
-            tc_txt.setText(tc);
-            sl_txt.setText(sl);
-            te_txt.setText(te);
+//            tc_txt.setText(tc);
+//            sl_txt.setText(sl);
+            te_txt.setText(String.valueOf(te));
 
         } catch (Exception e) {
             e.printStackTrace();
