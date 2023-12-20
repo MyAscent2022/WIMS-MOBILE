@@ -31,30 +31,18 @@ public class FlightListAdapter extends ArrayAdapter<FlightsModel> {
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             String flight_no = getItem(position).getFlightNumber();
-            String travel_status = getItem(position).getStatus();
-            String finish_flight = getItem(position).getTff();
-            String tmr = getItem(position).getTbs();
-            String tbs = getItem(position).getTbs();
-            String tbf = getItem(position).getTff();
+            String travel_status = getItem(position).getTravelStatus();
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
 
             TextView flight_no_txt = convertView.findViewById(R.id.flight_no);
             TextView travel_status_txt = convertView.findViewById(R.id.travel_status);
-            TextView finish_flight_txt = convertView.findViewById(R.id.finish_flight);
-            TextView tmr_txt = convertView.findViewById(R.id.tmr);
-            TextView tbs_txt = convertView.findViewById(R.id.tbs);
-            TextView tbf_txt = convertView.findViewById(R.id.tbf);
 
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
             flight_no_txt.setText(flight_no);
             travel_status_txt.setText(travel_status);
-            finish_flight_txt.setText(finish_flight);
-            tmr_txt.setText(tmr);
-            tbs_txt.setText(tbs);
-            tbf_txt.setText(tbf);
         } catch (Exception e) {
             e.printStackTrace();
         }

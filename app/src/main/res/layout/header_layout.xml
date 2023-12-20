@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
     android:orientation="horizontal"
     android:id="@+id/header_title">
 
+
     <ImageView
-        android:id="@+id/back_arrow"
+        android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/back_btn"
         android:layout_gravity="center"
         android:paddingLeft="10dp"/>
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:src="@drawable/paircargologo"/>
+    <LinearLayout
+        android:layout_width="@dimen/_160sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginLeft="@dimen/_53sdp"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/wims"
-        android:layout_marginLeft="5dp"
-        android:layout_gravity="center"/>
+        <ImageView
+            android:layout_width="@dimen/_51sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/paircargologo">
+        </ImageView>
+        <LinearLayout
+            android:layout_width="@dimen/_5sdp"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/wims"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_1sdp"
+            android:text="WIMS"
+            android:textAppearance="@style/wims"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
 
 </LinearLayout>

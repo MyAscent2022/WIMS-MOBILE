@@ -1,46 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/btn_refresh"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:clipToOutline="true"
-        android:layout_marginTop="10dp">
+        android:layout_height="@dimen/_46sdp"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="@dimen/_240sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_margin="@dimen/_8sdp"
+            android:layout_weight=".15"
+            android:background="@drawable/disabled_field"
+            android:defaultFocusHighlightEnabled="true"
+            android:queryHint="Search"
+            app:iconifiedByDefault="false" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/refresh_btn"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/blue"
+            android:text="Search"
+            app:tint="@color/white" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/flight_header"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_gravity="center"
-        android:clipToOutline="true"
-        android:layout_marginTop="20dp">
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center">
 
         <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="match_parent"
+            android:background="@drawable/expand_down_double">
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/swipe_down_"
+            android:gravity="center"
+            android:text="Swipe Down to Refresh">
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="FLIGHT LIST"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:fontFamily="@font/manrope">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/flight_title"/>
+            android:divider="#00000000">
 
-    </RelativeLayout>
+        </ListView>
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:divider="#00000000"
-        android:dividerHeight="10dp">
-
-    </ListView>
+    </LinearLayout>
 
 </LinearLayout>

@@ -3,55 +3,108 @@ package com.example.wims_new.ui.receiveCargo.viewModel;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
+
 import com.example.wims_new.BuildConfig;
+import com.example.wims_new.LocalDB.LocalDBHelper;
 import com.example.wims_new.R;
 import com.example.wims_new.apiCall.ApiCall;
 import com.example.wims_new.apiCall.ServiceGenerator;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityReceiveCargoBinding;
+import com.example.wims_new.model.CargoCategoryModel;
+import com.example.wims_new.model.CargoClassModel;
 import com.example.wims_new.model.CargoConditionModel;
+import com.example.wims_new.model.CargoStatusModel;
 import com.example.wims_new.model.FlightsModel;
 import com.example.wims_new.model.FlightsResponse;
+import com.example.wims_new.model.HawbModel;
+import com.example.wims_new.model.MawbDetails;
 import com.example.wims_new.model.MawbModel;
 import com.example.wims_new.model.MawbResponse;
+import com.example.wims_new.model.ResBody;
+import com.example.wims_new.model.SaveUldNumberModel;
 import com.example.wims_new.model.UldModel;
 import com.example.wims_new.model.UldResponse;
+import com.example.wims_new.model.UldTypesModel;
 import com.example.wims_new.ui.receiveCargo.adapter.FlightListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.HawbListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.MawbListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.UldListAdapter;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
+import com.example.wims_new.utils.SharedPref;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Credentials;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReceiveCargoViewModel {
 
-    private AlertDialog dialog;
+    private SweetAlertDialog dialog;
     private FlightsResponse resp;
     private List<FlightsModel> flights;
     private UldResponse uldResp;
     private List<UldModel> ulds;
     private MawbResponse mawbResp;
+    private SaveUldNumberModel saveUldNumberModel;
     private List<MawbModel> mawbs;
+    private List<HawbModel> hawbs;
+    private List<CargoCategoryModel> category;
+    private List<CargoClassModel> cargoClass;
+    private List<CargoStatusModel> status;
     private List<CargoConditionModel> condition;
+    private List<UldTypesModel> uld_types;
+    private List<UldTypesModel> uld_id;
+    LocalDBHelper db;
+    String flight_no = "";
+    String registry_no = "";
+    String uld_no = "";
+    int user_id = 0;
+    String[] hawb_count_ar;
 
     public void landedFlights(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         resp = new FlightsResponse();
+        SharedPref util = new SharedPref();
 
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-        dialog = alertsAndLoaders.showAlert(2, "Loading....", context, activity, null);
+        dialog = alertsAndLoaders.showAlert(3, "", "", context, null);
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<FlightsResponse> call = services.searchFlights();
+        System.out.println("USER ID >>>>>>>>>>>>>>>>>>>>>>>>>" + util.readPrefString(context, util.USER_ID));
+        Call<FlightsResponse> call = services.searchFlights(Integer.parseInt(util.readPrefString(context, util.USER_ID)));
+//        Call<FlightsResponse> call = services.searchFlights(35);
         call.enqueue(new Callback<FlightsResponse>() {
             @Override
             public void onResponse(Call<FlightsResponse> call, Response<FlightsResponse> response) {
@@ -59,16 +112,12 @@ public class ReceiveCargoViewModel {
 
                 try {
                     flights = new ArrayList<>();
+                    resp = response.body();
                     if (response.code() == 200) {
-                        resp = response.body();
-                        if (resp.getStatusCode() == 200) {
-                            flights = resp.getData().getFlights();
-                            viewData(activity, binding);
-                        } else {
-                            alertsAndLoaders.showAlert(1, resp.getMessage(), context, activity, activity.doNothing);
-                        }
+                        flights = resp.getData().getFlights();
+                        viewData(activity, binding);
                     } else {
-
+//                        alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
                     }
                     activity.getFlights(flights);
                 } catch (Exception e) {
@@ -78,6 +127,7 @@ public class ReceiveCargoViewModel {
 
             @Override
             public void onFailure(Call<FlightsResponse> call, Throwable t) {
+                dialog.cancel();
                 Log.e("Error:", t.getMessage());
             }
         });
@@ -87,7 +137,7 @@ public class ReceiveCargoViewModel {
         uldResp = new UldResponse();
 
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, null);
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
         Call<UldResponse> call = services.searchUlds(flight_number);
@@ -100,14 +150,16 @@ public class ReceiveCargoViewModel {
                     ulds = new ArrayList<>();
                     if (response.code() == 200) {
                         uldResp = response.body();
-                        if (resp.getStatusCode() == 200){
-                            ulds = uldResp.getData().getUlds();
+                        if (resp.getStatusCode() == 200) {
+                            ulds = uldResp.getData().getUldList();
+
+                            binding.uldLayout.noOfUld.setText(ulds.size() + "");
                             viewData2(activity, binding);
                         } else {
-                            alertsAndLoaders.showAlert(1, uldResp.getMessage(), context, activity, activity.doNothing);
+                            alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                         }
                     } else {
-
+                        alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                     }
                     activity.getUlds(ulds);
                 } catch (Exception e) {
@@ -122,14 +174,14 @@ public class ReceiveCargoViewModel {
         });
     }
 
-    public void getMawbList(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, String registry_number) {
+    public void getMawbList(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, String uld_no, boolean isUld, String flight_no, boolean is_dialog) {
         mawbResp = new MawbResponse();
 
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<MawbResponse> call = services.getMawbs(registry_number);
+        Call<MawbResponse> call = services.getMawbs(uld_no, isUld, flight_no);
         call.enqueue(new Callback<MawbResponse>() {
             @Override
             public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
@@ -140,16 +192,26 @@ public class ReceiveCargoViewModel {
                     if (response.code() == 200) {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
-                            mawbs = mawbResp.getData().getMawbs();
-                            viewData3(activity, binding);
-                        } else {
-                            alertsAndLoaders.showAlert(1, mawbResp.getMessage(), context, activity, activity.doNothing);
-                        }
-                    } else {
 
+                            if (is_dialog) {
+                                mawbs = mawbResp.getData().getMawbs();
+//                                for(int i = 0; i < mawbs.size(); i++){
+//                                    getHawb(context,activity,binding, mawbs.get(i).getMawbNumber());
+//
+//                                }
+
+                                activity.getMawb(mawbs);
+                            } else {
+                                mawbs = mawbResp.getData().getMawbs();
+                                viewData3(activity, binding);
+                            }
+
+                        } else {
+//                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        }
                     }
                     activity.getMawbs(mawbs);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -161,33 +223,51 @@ public class ReceiveCargoViewModel {
         });
     }
 
-    public void getHawb(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, String registry_number, String mawb_number){
+    public void getHawb(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, String mawb_number) {
         mawbResp = new MawbResponse();
 
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+        dialog = alertsAndLoaders.showAlert(3, "Loading...", "", context, null);
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<MawbResponse> call = services.getHawbs(registry_number, mawb_number);
+        Call<MawbResponse> call = services.getHawbs(mawb_number);
         call.enqueue(new Callback<MawbResponse>() {
             @Override
             public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
                 dialog.cancel();
 
                 try {
-                    mawbs = new ArrayList<>();
+                    int layout_id = 0;
+                    hawbs = new ArrayList<>();
+
                     if (response.code() == 200) {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
-                            mawbs = mawbResp.getData().getMawbs();
+                            hawbs = mawbResp.getData().getHawbs();
+//                            binding.mawbDetails.hawb.setText(hawb_number);
+                            layout_id = 5;
+                            toShowLayout(binding, layout_id, false, false);
                             viewData4(activity, binding);
                         } else {
-                            alertsAndLoaders.showAlert(1, mawbResp.getMessage(), context, activity, activity.doNothing);
+                            binding.mawbDetails.mawbNo.setText(mawb_number);
+                            binding.mawbDetails.hawb.setText(mawb_number);
+//                        -- ADD RECEIVER NAME!!!!
+//                        binding.mawbDetails.checker.setText(selectedMawbs.getConsigneeName());
+//                        -- ADD LOCATION NUMBER!!!!!!!!!!
+//                        binding.mawbDetails.locationNo.setText("");
+                            getCargoCategory(context, activity, binding);
+                            getCargoClass(context, activity, binding);
+                            getCargoStatus(context, activity, binding);
+
+                            layout_id = 6;
+                            toShowLayout(binding, layout_id, false, false);
                         }
                     } else {
 
                     }
-                    activity.getMawbs(mawbs);
+                        activity.getHawbs(hawbs);
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -200,7 +280,7 @@ public class ReceiveCargoViewModel {
         });
     }
 
-    public void toShowLayout(ActivityReceiveCargoBinding binding,int layout_id){
+    public void toShowLayout(ActivityReceiveCargoBinding binding, int layout_id, boolean is_uld, boolean is_uploaded) {
 
         binding.flightListLayout.getRoot().setVisibility(View.GONE);
         binding.flightDetailsLayout.getRoot().setVisibility(View.GONE);
@@ -210,28 +290,53 @@ public class ReceiveCargoViewModel {
         binding.mawbDetails.getRoot().setVisibility(View.GONE);
         binding.cargoImagesLayout.getRoot().setVisibility(View.GONE);
         binding.headerLayout.getRoot().setVisibility(View.VISIBLE);
-        if(layout_id==0){
+        System.out.println("LAYOUT ID >>>>>>>>>>>>>>>>>>>>>>" +  layout_id);
+        if (layout_id == 0) {
 
-        }else if(layout_id==1){
+        } else if (layout_id == 1) {
             binding.flightListLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==2){
+        } else if (layout_id == 2) {
             binding.flightDetailsLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==3){
+        } else if (layout_id == 3) {
             binding.uldLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==4){
-            binding.uldImagesLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==5){
+        } else if (layout_id == 4) {
             binding.mawbListLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==6){
+        } else if (layout_id == 5) {
+
+
             binding.hawbListLayout.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==7){
+        } else if (layout_id == 6) {
             binding.mawbDetails.getRoot().setVisibility(View.VISIBLE);
-        }else if(layout_id==8){
+
+            if (is_uploaded) {
+                binding.mawbDetails.uploadCargoImageLayout.setVisibility(View.GONE);
+                binding.mawbDetails.listView.setVisibility(View.VISIBLE);
+                binding.mawbDetails.listTitle.setVisibility(View.VISIBLE);
+            }
+//            binding.mawbDetails.getRoot().setVisibility(View.VISIBLE);
+
+        } else if (layout_id == 7) {
+
             binding.cargoImagesLayout.getRoot().setVisibility(View.VISIBLE);
+            if (is_uld) {
+                binding.cargoImagesLayout.uldTitle.setVisibility(View.VISIBLE);
+                binding.cargoImagesLayout.uldNumber.setVisibility(View.VISIBLE);
+                binding.cargoImagesLayout.cargoTitle.setVisibility(View.GONE);
+            } else {
+                binding.cargoImagesLayout.uldTitle.setVisibility(View.GONE);
+                binding.cargoImagesLayout.uldNumber.setVisibility(View.GONE);
+                binding.cargoImagesLayout.cargoTitle.setVisibility(View.VISIBLE);
+            }
+
+        } else if (layout_id == 8) {
+
+            binding.cargoImagesLayout.getRoot().setVisibility(View.VISIBLE);
+        } else if (layout_id == 9) {
+            binding.cargoImageListLayout.getRoot().setVisibility(View.VISIBLE);
         }
     }
 
-    private void viewData(Activity activity, ActivityReceiveCargoBinding binding){
+    private void viewData(Activity activity, ActivityReceiveCargoBinding binding) {
         try {
             FlightListAdapter adapter = new FlightListAdapter(activity, R.layout.card_flight_line, flights);
             binding.flightListLayout.listView.setAdapter(adapter);
@@ -260,40 +365,43 @@ public class ReceiveCargoViewModel {
 
     private void viewData4(Activity activity, ActivityReceiveCargoBinding binding) {
         try {
-            HawbListAdapter adapter = new HawbListAdapter(activity, R.layout.pending_line, mawbs);
+            HawbListAdapter adapter = new HawbListAdapter(activity, R.layout.pending_line, hawbs);
             binding.hawbListLayout.listLayout.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void populateFlightDetails(ActivityReceiveCargoBinding binding, FlightsModel selectedFlights){
-        binding.flightDetailsLayout.flightNo.setText(selectedFlights.getFlightNumber());
-        binding.flightDetailsLayout.travelStatus.setText(selectedFlights.getStatus());
-        binding.flightDetailsLayout.tmr.setText(selectedFlights.getTbs());
-        binding.flightDetailsLayout.tbs.setText(selectedFlights.getTbs());
-        binding.flightDetailsLayout.tbf.setText(selectedFlights.getTff());
+    public void populateFlightDetails(ActivityReceiveCargoBinding binding, FlightsModel selectedFlights) {
 
-        binding.flightDetailsLayout.flightNumber.setText(selectedFlights.getFlightNumber());
-        binding.flightDetailsLayout.registryNo.setText(selectedFlights.getRegistryNumber());
-        binding.flightDetailsLayout.flightStatus.setText(selectedFlights.getStatus());
-        binding.flightDetailsLayout.timeBreakdownStart.setText(selectedFlights.getTbs());
-        binding.flightDetailsLayout.timeFinishFlight.setText(selectedFlights.getTff());
+        flight_no = selectedFlights.getFlightNumber();
+        registry_no = selectedFlights.getRegistryNumber();
+
+        binding.flightDetailsLayout.flightNo.setText(flight_no);
+        binding.flightDetailsLayout.travelStatus.setText(selectedFlights.getTravelStatus());
+
+        binding.flightDetailsLayout.flightNumber.setText(flight_no);
+        binding.flightDetailsLayout.airline.setText(selectedFlights.getAirline());
+        binding.flightDetailsLayout.registryNo.setText(registry_no);
+//        binding.flightDetailsLayout.entryNo.setText(selectedFlights.getEntryNumber());
+        binding.flightDetailsLayout.arrivalDt.setText(selectedFlights.getArrivalDate());
+        binding.flightDetailsLayout.flightStatus.setText(selectedFlights.getFlightStatus());
     }
 
-    public void populatedHawbDetails(ActivityReceiveCargoBinding binding, MawbModel selectedMawbs) {
-        binding.mawbDetails.status.setText(selectedMawbs.getCargoStatus());
+    public void populatedHawbDetails(ActivityReceiveCargoBinding binding, MawbModel selectedMawbs, HawbModel selectedHawbs) {
+//        binding.mawbDetails.status.setText(selectedMawbs.getCargoStatus());
         binding.mawbDetails.mawbNo.setText(selectedMawbs.getMawbNumber());
         binding.mawbDetails.checker.setText(selectedMawbs.getConsigneeName());
-        binding.mawbDetails.hawb.setText(selectedMawbs.getHawbNumber());
+        binding.mawbDetails.hawb.setText(selectedHawbs.getHawbNumber());
         binding.mawbDetails.locationNo.setText("");
+
     }
 
     public void getCargoConditionList(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         mawbResp = new MawbResponse();
 
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
         Call<MawbResponse> call = services.getCargoCondition();
@@ -313,13 +421,13 @@ public class ReceiveCargoViewModel {
                             binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
 
                         } else {
-                            alertsAndLoaders.showAlert(1, mawbResp.getMessage(), context, activity, activity.doNothing);
+                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
                         }
                     } else {
 //                        DISPLAY ERROR HERE.....
                     }
 //                    activity.getMawbs(mawbs);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -331,12 +439,460 @@ public class ReceiveCargoViewModel {
         });
     }
 
-    private String[] cargoCondition(List<CargoConditionModel> condition){
+    private String[] cargoCondition(List<CargoConditionModel> condition) {
         String[] ar = new String[condition.size()];
-        for(int i =0; i < condition.size(); i++){
+        for (int i = 0; i < condition.size(); i++) {
             ar[i] = condition.get(i).getCondition();
         }
         return ar;
     }
+
+    public void insertMawbDetails(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, List<Uri> uri, String[] fname, String mawb_number, String flight_number, String hawb_number) {
+        MawbDetails response = new MawbDetails();
+        SharedPref util = new SharedPref();
+        db= new LocalDBHelper(context);
+//      -- SAVE INTO ACCEPTANCE
+
+        response.setActualPcs(db.getMawbDetails().getActualPcs());
+        response.setWeight(db.getMawbDetails().getWeight());
+        response.setVolume(db.getMawbDetails().getVolume());
+        response.setLength(db.getMawbDetails().getLength());
+        response.setWidth(db.getMawbDetails().getWidth());
+        response.setHeight(db.getMawbDetails().getHeight());
+        response.setCargoCategoryId(1);
+        response.setCargoClassId(1);
+        response.setCargoStatusId(1);
+        response.setUserId(Integer.valueOf(util.readPrefString(context, util.USER_ID)));
+
+//        -- SAVE STORAGE LOGS
+//        response.getStorageLogs().setUserId(String.valueOf(util.readPrefString(context, util.USER_ID)));
+//        response.getStorageLogs().setRegistryNumber(registry_no);
+//        response.getStorageLogs().setFlightNumber(db.getMawbDetails().getFlight_number());
+//        response.getStorageLogs().setStoragerStatus(); -- GET STORAGER STATUS
+
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog = alertsAndLoaders.showAlert(3, "Loading. . .", "", context, null);
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<MawbResponse> call = services.saveMawbDetails(response, mawb_number,flight_number, hawb_number);
+        call.enqueue(new Callback<MawbResponse>() {
+            @Override
+            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+
+                try {
+                    dialog.cancel();
+                    MawbResponse res = new MawbResponse();
+                    res = response.body();
+
+                    if (res.getStatusCode() ==200) {
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(0, "Success!", res.getMessage(), context, activity.backToMenu);
+//                        to_upload(uri,fname,context, binding);
+                    } else {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
+
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
+
+    public void to_upload(List<Uri> uri, String[] fname, Context context, ActivityReceiveCargoBinding binding) {
+        db = new LocalDBHelper(context);
+        try {
+            OkHttpClient.Builder b = new OkHttpClient.Builder();
+            b.connectTimeout(5, TimeUnit.MINUTES) // connect timeout
+                    .writeTimeout(5, TimeUnit.MINUTES) // write timeout
+                    .readTimeout(5, TimeUnit.MINUTES); // read timeout
+            OkHttpClient client = new OkHttpClient();
+            client = b.build();
+            MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
+            MultipartBody.Builder builder = bodyBuilder.setType(MultipartBody.FORM);
+            bodyBuilder.setType(MultipartBody.FORM)
+//                    .addFormDataPart("txn_cargo_manifest_details_id", getIntent().getStringExtra("device_id")) -- GET MAWB ID
+                    .addFormDataPart("cargo_conditon_id", String.valueOf(3))
+//                    -- GET CARGO CONDITION ID
+                    .addFormDataPart("remarks", binding.cargoImagesLayout.remarks.getText().toString())
+                    .addFormDataPart("mawb_number", db.getMawbDetails().getMawb_number())
+                    .addFormDataPart("hawb_number", db.getMawbDetails().getHawb_number())
+                    .addFormDataPart("flight_number", db.getMawbDetails().getFlight_number())
+//                    .addFormDataPart("uld_type_id", String.valueOf(2))
+//                    -- GET ULD TYPE ID
+
+                    .addFormDataPart("actual_pcs", String.valueOf(db.getMawbDetails().getActualPcs()))
+                    .addFormDataPart("weight", String.valueOf(db.getMawbDetails().getWeight()))
+                    .addFormDataPart("volume", String.valueOf(db.getMawbDetails().getVolume()))
+                    .addFormDataPart("length", String.valueOf(db.getMawbDetails().getLength()))
+                    .addFormDataPart("width", String.valueOf(db.getMawbDetails().getWidth()))
+                    .addFormDataPart("height", String.valueOf(db.getMawbDetails().getHeight()))
+                    .addFormDataPart("cargo_category", String.valueOf(1))
+                    .addFormDataPart("cargo_class", String.valueOf(2))
+                    .addFormDataPart("cargo_status", String.valueOf(3));
+
+            String[] ext = context.getContentResolver().getType(uri.get(0)).split("/");
+            File f1=compressFile(uri.get(0), fname[0]+"."+ext[1], context);
+
+            bodyBuilder.setType(MultipartBody.FORM)
+                    .addFormDataPart("file[]", fname[0]+"."+ext[1],
+                            RequestBody.create(MediaType.parse("application/octet-stream"), f1));
+
+            String[] ext1 = context.getContentResolver().getType(uri.get(1)).split("/");
+            File f2=compressFile(uri.get(1), fname[1]+"."+ext1[1], context);
+
+            bodyBuilder.setType(MultipartBody.FORM)
+                    .addFormDataPart("file[]", fname[1]+"."+ext1[1],
+                            RequestBody.create(MediaType.parse("application/octet-stream"), f2));
+
+           // MediaType mediaType = MediaType.parse("text/plain");
+            RequestBody body = bodyBuilder.build();
+            String authToken = Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+            Request request = new Request.Builder()
+                    .url("http://192.168.20.127:33913/wims_api/" + "save_hawb_image")
+
+
+                    .method("POST", body)
+//                    .addHeader("Authorization", authToken)
+                    .build();
+            Gson gson = new Gson();
+            ResponseBody responseBody = client.newCall(request).execute().body();
+            ResBody res = new ResBody();
+            String resp = responseBody.string();
+            System.out.println("my resp " + resp);
+            try {
+                res = gson.fromJson(resp, ResBody.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private File compressFile(Uri imageUri, String filename,Context context) {
+        File finalFile = null;
+        try {
+
+
+            Bitmap imageBitmap =  MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+            finalFile = new File(Environment.getExternalStorageDirectory().toString() + "/DCIM/ECTSIMAGES/" + filename);
+            FileOutputStream fos = new FileOutputStream(finalFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return finalFile;
+    }*/
+
+    private File compressFile(Uri imageUri, String filename, Context context) {
+        File finalFile = null;
+        try {
+            Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+
+            int newWidth = 900; // Replace with your desired width
+            int newHeight = 1200; // Replace with your desired height
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, newWidth, newHeight, true);
+            finalFile = new File(context.getCacheDir() + "/" + filename);
+
+            FileOutputStream fos = new FileOutputStream(finalFile);
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return finalFile;
+    }
+
+    public ArrayList<String> getUldTypes(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        mawbResp = new MawbResponse();
+        ArrayList<String> uld_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", "",context, activity, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<UldResponse> call = services.getUldTypes();
+        call.enqueue(new Callback<UldResponse>() {
+            @Override
+            public void onResponse(Call<UldResponse> call, Response<UldResponse> response) {
+                dialog.cancel();
+
+                try {
+                    uld_types = new ArrayList<>();
+                    if (response.code() == 200) {
+                        uldResp = response.body();
+                        if (uldResp.getStatusCode() == 200) {
+                            uld_types = uldResp.getData().getTypes();
+                            for (int i = 0; i < uld_types.size(); i++) {
+                                uld_arr.add(uld_types.get(i).getType());
+                            }
+                            activity.getUldTypes(uld_types);
+                        } else {
+//                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+//                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+
+        return uld_arr;
+    }
+
+
+    public ArrayList<String> getCargoCategory(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        mawbResp = new MawbResponse();
+        ArrayList<String> category_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", "",context, activity, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<MawbResponse> call = services.getCargoCategory();
+        call.enqueue(new Callback<MawbResponse>() {
+            @Override
+            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+                dialog.cancel();
+
+                try {
+                    category = new ArrayList<>();
+                    if (response.code() == 200) {
+                        mawbResp = response.body();
+                        if (mawbResp.getStatusCode() == 200) {
+                            category = mawbResp.getData().getCategory();
+                            for (int i = 0; i < category.size(); i++) {
+                                category_arr.add(category.get(i).getDescription());
+                            }
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                    }
+//                    activity.getMawbs(mawbs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+
+        return category_arr;
+    }
+
+    public ArrayList<String> getCargoClass(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        mawbResp = new MawbResponse();
+        ArrayList<String> class_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", "",context, activity, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<MawbResponse> call = services.getCargoClass();
+        call.enqueue(new Callback<MawbResponse>() {
+            @Override
+            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+                dialog.cancel();
+
+                try {
+                    cargoClass = new ArrayList<>();
+                    if (response.code() == 200) {
+                        mawbResp = response.body();
+                        if (mawbResp.getStatusCode() == 200) {
+                            cargoClass = mawbResp.getData().getCargoClass();
+                            for (int i = 0; i < cargoClass.size(); i++) {
+                                class_arr.add(cargoClass.get(i).getClassdesc());
+                            }
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                    }
+//                    activity.getMawbs(mawbs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+
+        return class_arr;
+    }
+
+    public ArrayList<String> getCargoStatus(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        mawbResp = new MawbResponse();
+        ArrayList<String> status_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", "",context, activity, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<MawbResponse> call = services.getCargoStatus();
+        call.enqueue(new Callback<MawbResponse>() {
+            @Override
+            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+                dialog.cancel();
+
+                try {
+                    status = new ArrayList<>();
+                    if (response.code() == 200) {
+                        mawbResp = response.body();
+                        if (mawbResp.getStatusCode() == 200) {
+                            status = mawbResp.getData().getStatus();
+                            for (int i = 0; i < status.size(); i++) {
+                                status_arr.add(status.get(i).getDescription());
+                            }
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                    }
+//                    activity.getMawbs(mawbs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+
+        return status_arr;
+    }
+
+    public void saveUldNumber(Context context, ActivityReceiveCargoBinding binding, ReceiveCargo activity, SaveUldNumberModel save) {
+//        save = new SaveUldNumberModel();
+        AlertsAndLoaders alert = new AlertsAndLoaders();
+        SweetAlertDialog sDialog = alert.showAlert(3, "", "Please wait", context, null);
+        ApiCall service = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<UldResponse> call = service.saveUldNumber(save);
+        call.enqueue(new Callback<UldResponse>() {
+            @Override
+            public void onResponse(Call<UldResponse> call, Response<UldResponse> response) {
+
+                try {
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    sDialog.cancel();
+                    UldResponse res = new UldResponse();
+                    res = response.body();
+
+                    if (response.code() == 200) {
+//                        -- SUCCESS MESSAGE
+                        alertsAndLoaders.showAlert(0, "", "Successfully added ULD!", context, activity.goToUldList);
+                    } else {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldResponse> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
+
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
+    public void updateUldNumber(Context context, ActivityReceiveCargoBinding binding, ReceiveCargo activity, SaveUldNumberModel update, String lastUldNumber) {
+//        save = new SaveUldNumberModel();
+        AlertsAndLoaders alert = new AlertsAndLoaders();
+        SweetAlertDialog sDialog = alert.showAlert(3, "", "Please wait", context, null);
+        ApiCall service = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<UldResponse> call = service.updateUldNumber(update, lastUldNumber);
+        call.enqueue(new Callback<UldResponse>() {
+            @Override
+            public void onResponse(Call<UldResponse> call, Response<UldResponse> response) {
+
+                try {
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    sDialog.cancel();
+                    UldResponse res = new UldResponse();
+                    res = response.body();
+
+                    if (response.code() == 200) {
+//                        -- SUCCESS MESSAGE
+                        alertsAndLoaders.showAlert(0, "", "Successfully updated ULD!", context, activity.goToUldList);
+                    } else {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldResponse> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
+
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
 
 }
