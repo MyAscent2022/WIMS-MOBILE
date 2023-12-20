@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.wims_new.ui.Login.view.LoginPage;
 import com.example.wims_new.ui.mainMenu.MainMenu;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,8 +15,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent in = new Intent(MainActivity.this, MainMenu.class);
-        startActivity(in);
+//        Intent in = new Intent(MainActivity.this, LoginPage.class);
+//        startActivity(in);
 
+
+//        AppVersion v = new AppVersion();
+//        txt_version.setText("version " + v.version);
+
+        Thread background = new Thread() {
+            public void run() {
+                try {
+                    sleep(1000);
+                    startActivity(new Intent(MainActivity.this, LoginPage.class));
+//                    Animatoo.INSTANCE.animateSwipeLeft(MainActivity.this);
+
+                    finish();
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+        };
+        background.start();
     }
+
+
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:background="@drawable/info_card">
+        <TextView
+            android:id="@+id/uld_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/manrope"
+            android:lineSpacingExtra="-9sp"
+            android:textStyle="bold"
+            android:textColor="#0038A8"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="UPLOADED CARGO IMAGES" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:divider="#00000000"
+            android:dividerHeight="10dp">
+
+        </ListView>
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

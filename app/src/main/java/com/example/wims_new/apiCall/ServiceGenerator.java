@@ -23,7 +23,8 @@ public class ServiceGenerator {
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     //.baseUrl(BuildConfig.API_BASE_URL_LOCAL)
-                    .baseUrl("http://112.199.119.250:33911/wims_api/")
+//                    .baseUrl("http://112.199.119.250:33911/wims_api/")
+                    .baseUrl("http://192.168.20.127:33913/wims_api/")
                     .addConverterFactory(GsonConverterFactory.create(gson));
     private static Retrofit retrofit = builder.build();
 

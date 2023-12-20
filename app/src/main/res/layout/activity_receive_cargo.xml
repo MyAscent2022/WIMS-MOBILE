@@ -52,4 +52,11 @@
         layout="@layout/uld_images_layout"
         android:visibility="gone"/>
 
+    <include
+        android:id="@+id/cargo_image_list_layout"
+        layout="@layout/cargo_image_list_layout"
+        android:visibility="gone">
+
+    </include>
+
 </LinearLayout>
