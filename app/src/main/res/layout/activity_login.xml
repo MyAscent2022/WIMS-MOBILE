@@ -91,7 +91,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/regular"
                 android:textColor="@color/black"
-                android:text="receivingHandler"
+                android:text="superadmin"
                 android:textStyle="normal"
 
                 />
@@ -124,7 +124,7 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/regular"
                 android:inputType="textPassword"
-                android:text="receivingHandler"
+                android:text="superadmin"
                 android:textColor="@color/black"
 
 

@@ -30,9 +30,9 @@ public class MawbDetails {
         this.actualPcs = actualPcs;
         this.weight = weight;
         this.volume = volume;
-        this.volume = length;
-        this.volume = width;
-        this.volume = height;
+        this.length = length;
+        this.width = width;
+        this.height = height;
         this.cargoCategory = cargoCategory;
         this.cargoClass = cargoClass;
         this.cargoStatus = cargoStatus;

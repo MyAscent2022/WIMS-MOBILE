@@ -77,7 +77,7 @@ public class LoginViewModel {
             });
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

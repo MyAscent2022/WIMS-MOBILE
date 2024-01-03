@@ -25,12 +25,15 @@ import com.example.wims_new.apiCall.ApiCall;
 import com.example.wims_new.apiCall.ServiceGenerator;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityReceiveCargoBinding;
+import com.example.wims_new.model.CargoActLogsModel;
 import com.example.wims_new.model.CargoCategoryModel;
 import com.example.wims_new.model.CargoClassModel;
 import com.example.wims_new.model.CargoConditionModel;
 import com.example.wims_new.model.CargoStatusModel;
+import com.example.wims_new.model.ConfirmCargoModel;
 import com.example.wims_new.model.FlightsModel;
 import com.example.wims_new.model.FlightsResponse;
+import com.example.wims_new.model.HawbDetails;
 import com.example.wims_new.model.HawbModel;
 import com.example.wims_new.model.MawbDetails;
 import com.example.wims_new.model.MawbModel;
@@ -45,6 +48,7 @@ import com.example.wims_new.ui.receiveCargo.adapter.HawbListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.MawbListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.UldListAdapter;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
+import com.example.wims_new.utils.RotateImage;
 import com.example.wims_new.utils.SharedPref;
 import com.google.gson.Gson;
 
@@ -257,7 +261,7 @@ public class ReceiveCargoViewModel {
 //                        binding.mawbDetails.locationNo.setText("");
                             getCargoCategory(context, activity, binding);
                             getCargoClass(context, activity, binding);
-                            getCargoStatus(context, activity, binding);
+//                            getCargoStatus(context, activity, binding);
 
                             layout_id = 6;
                             toShowLayout(binding, layout_id, false, false);
@@ -448,21 +452,25 @@ public class ReceiveCargoViewModel {
     }
 
     public void insertMawbDetails(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, List<Uri> uri, String[] fname, String mawb_number, String flight_number, String hawb_number) {
-        MawbDetails response = new MawbDetails();
+        ConfirmCargoModel response = new ConfirmCargoModel();
+        MawbDetails mawbDetails = new MawbDetails();
         SharedPref util = new SharedPref();
-        db= new LocalDBHelper(context);
+        db = new LocalDBHelper(context);
 //      -- SAVE INTO ACCEPTANCE
 
-        response.setActualPcs(db.getMawbDetails().getActualPcs());
-        response.setWeight(db.getMawbDetails().getWeight());
-        response.setVolume(db.getMawbDetails().getVolume());
-        response.setLength(db.getMawbDetails().getLength());
-        response.setWidth(db.getMawbDetails().getWidth());
-        response.setHeight(db.getMawbDetails().getHeight());
-        response.setCargoCategoryId(1);
-        response.setCargoClassId(1);
-        response.setCargoStatusId(1);
-        response.setUserId(Integer.valueOf(util.readPrefString(context, util.USER_ID)));
+        mawbDetails = db.getMawbDetails();
+        System.out.println("ACTUAL PCS >>>>>>>>>>>>>> " + mawbDetails.getActualPcs());
+
+
+
+        mawbDetails.setCargoCategoryId(1);
+        mawbDetails.setCargoClassId(1);
+        mawbDetails.setCargoStatusId(1);
+        mawbDetails.setUserId(Integer.valueOf(util.readPrefString(context, util.USER_ID)));
+
+        response.setMawbDetails(mawbDetails);
+        //response.setFiles(getFilePart(uri,context));
+
 
 //        -- SAVE STORAGE LOGS
 //        response.getStorageLogs().setUserId(String.valueOf(util.readPrefString(context, util.USER_ID)));
@@ -474,7 +482,7 @@ public class ReceiveCargoViewModel {
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
         dialog = alertsAndLoaders.showAlert(3, "Loading. . .", "", context, null);
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<MawbResponse> call = services.saveMawbDetails(response, mawb_number,flight_number, hawb_number);
+        Call<MawbResponse> call = services.saveMawbDetails(response, mawb_number,flight_number, hawb_number, Integer.valueOf(util.readPrefString(context, util.USER_ID)));
         call.enqueue(new Callback<MawbResponse>() {
             @Override
             public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
@@ -484,9 +492,10 @@ public class ReceiveCargoViewModel {
                     MawbResponse res = new MawbResponse();
                     res = response.body();
 
-                    if (res.getStatusCode() ==200) {
-                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(0, "Success!", res.getMessage(), context, activity.backToMenu);
+                    if (res.getStatusCode() == 200) {
+
+                        uploadImage( context,  activity,  uri, dialog);
+
 //                        to_upload(uri,fname,context, binding);
                     } else {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -503,6 +512,54 @@ public class ReceiveCargoViewModel {
 
             @Override
             public void onFailure(Call<MawbResponse> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
+
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
+
+    public void uploadImage(Context context, ReceiveCargo activity,  List<Uri> uri,SweetAlertDialog dialog) {
+
+        //response.setFiles(getFilePart(uri,context));
+
+
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<Integer> call = services.uploadImage(getFilePart(uri,context));
+        SweetAlertDialog finalDialog = dialog;
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+                try {
+                    finalDialog.cancel();
+                    Integer res = response.body();
+
+                    if (res == 1) {
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
+//                        to_upload(uri,fname,context, binding);
+                    } else {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
                 Log.e("Error:", t.getMessage());
 
                 System.out.println("Check your connection");
@@ -548,14 +605,14 @@ public class ReceiveCargoViewModel {
                     .addFormDataPart("cargo_status", String.valueOf(3));
 
             String[] ext = context.getContentResolver().getType(uri.get(0)).split("/");
-            File f1=compressFile(uri.get(0), fname[0]+"."+ext[1], context);
+            File f1=compressFile(uri.get(0),  context);
 
             bodyBuilder.setType(MultipartBody.FORM)
                     .addFormDataPart("file[]", fname[0]+"."+ext[1],
                             RequestBody.create(MediaType.parse("application/octet-stream"), f1));
 
             String[] ext1 = context.getContentResolver().getType(uri.get(1)).split("/");
-            File f2=compressFile(uri.get(1), fname[1]+"."+ext1[1], context);
+            File f2=compressFile(uri.get(1),  context);
 
             bodyBuilder.setType(MultipartBody.FORM)
                     .addFormDataPart("file[]", fname[1]+"."+ext1[1],
@@ -565,7 +622,7 @@ public class ReceiveCargoViewModel {
             RequestBody body = bodyBuilder.build();
             String authToken = Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
             Request request = new Request.Builder()
-                    .url("http://192.168.20.127:33913/wims_api/" + "save_hawb_image")
+                    .url("http://192.168.254.201:33913/wims_api/" + "save_hawb_image")
 
 
                     .method("POST", body)
@@ -586,6 +643,37 @@ public class ReceiveCargoViewModel {
         }
     }
 
+    private File compressFile(Uri imageUri, Context context) {
+        File finalFile = null;
+        try {
+            //Bitmap bmap = toRotateBitmap(imageUri, filename);
+            Bitmap bmap=new RotateImage().toRotateBitmap(imageUri,context);
+            Bitmap imageBitmap = bmap;
+
+            int newWidth = 900;
+            int newHeight = 1200;
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, newWidth, newHeight, true);
+            finalFile = new File(context.getCacheDir() + "/" + new RotateImage().getFileNameFromUri(imageUri,context));
+
+            FileOutputStream fos = new FileOutputStream(finalFile);
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return finalFile;
+    }
+    private List<MultipartBody.Part> getFilePart(List<Uri> uri, Context context){
+        List<MultipartBody.Part> filePart = new ArrayList<>();
+        for(Uri u:uri){
+            File file=compressFile(u,context);
+            filePart.add(MultipartBody.Part.createFormData("file[]", new RotateImage().getFileNameFromUri(u, context), RequestBody.create(MediaType.parse("application/octet-stream"), file)));
+        }
+
+        return filePart;
+    }
+
     /*private File compressFile(Uri imageUri, String filename,Context context) {
         File finalFile = null;
         try {
@@ -604,7 +692,7 @@ public class ReceiveCargoViewModel {
         return finalFile;
     }*/
 
-    private File compressFile(Uri imageUri, String filename, Context context) {
+   /* private File compressFile(Uri imageUri, String filename, Context context) {
         File finalFile = null;
         try {
             Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
@@ -623,7 +711,7 @@ public class ReceiveCargoViewModel {
             e.printStackTrace();
         }
         return finalFile;
-    }
+    }*/
 
     public ArrayList<String> getUldTypes(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         mawbResp = new MawbResponse();
@@ -761,7 +849,7 @@ public class ReceiveCargoViewModel {
         return class_arr;
     }
 
-    public ArrayList<String> getCargoStatus(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+    public void getCargoStatus(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         mawbResp = new MawbResponse();
         ArrayList<String> status_arr = new ArrayList<String>();
 
@@ -803,7 +891,6 @@ public class ReceiveCargoViewModel {
             }
         });
 
-        return status_arr;
     }
 
     public void saveUldNumber(Context context, ActivityReceiveCargoBinding binding, ReceiveCargo activity, SaveUldNumberModel save) {

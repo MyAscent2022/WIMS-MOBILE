@@ -1,7 +1,11 @@
 package com.example.wims_new.apiCall;
 
 
+import com.example.wims_new.model.CargoActLogsModel;
+import com.example.wims_new.model.ConfirmCargoModel;
 import com.example.wims_new.model.FlightsResponse;
+import com.example.wims_new.model.HawbDetails;
+import com.example.wims_new.model.HawbModel;
 import com.example.wims_new.model.MawbDetails;
 import com.example.wims_new.model.MawbResponse;
 import com.example.wims_new.model.SaveUldNumberModel;
@@ -13,10 +17,15 @@ import com.example.wims_new.ui.storeCargo.releasing.view.Model.ReleaseCargoRespo
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackResponse;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageResponse;
 
+import java.util.List;
+
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiCall {
@@ -39,8 +48,14 @@ public interface ApiCall {
     @GET("hawbs_per_mawb")
     Call<MawbResponse> getHawbs(@Query("mawb_number") String mawb_number);
 
+
     @POST("confirm_cargo")
-    Call<MawbResponse> saveMawbDetails(@Body MawbDetails mawbDetailsResponse, @Query("mawb_number") String mawb_number, @Query("flightNumber") String flightNumber, @Query("hawb_number") String hawb_number);
+    Call<MawbResponse> saveMawbDetails(@Body ConfirmCargoModel confirmCargoModel, @Query("mawb_number") String mawb_number, @Query("flight_number") String flightNumber, @Query("hawb_number") String hawb_number, @Query("user_id") int user_id);
+
+
+    @Multipart
+    @POST("upload_image")
+    Call<Integer> uploadImage(@Part List<MultipartBody.Part> files);
 
     @GET("get_uld_type")
     Call<UldResponse>getUldTypes();

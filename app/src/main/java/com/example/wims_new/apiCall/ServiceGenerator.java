@@ -2,6 +2,7 @@ package com.example.wims_new.apiCall;
 
 import android.text.TextUtils;
 
+import com.example.wims_new.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -22,9 +23,9 @@ public class ServiceGenerator {
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
-                    //.baseUrl(BuildConfig.API_BASE_URL_LOCAL)
+//                    .baseUrl(BuildConfig.API_BASE_URL_LOCAL)
 //                    .baseUrl("http://112.199.119.250:33911/wims_api/")
-                    .baseUrl("http://192.168.20.127:33913/wims_api/")
+                    .baseUrl("http://192.168.20.179:33913/wims_api/")
                     .addConverterFactory(GsonConverterFactory.create(gson));
     private static Retrofit retrofit = builder.build();
 
