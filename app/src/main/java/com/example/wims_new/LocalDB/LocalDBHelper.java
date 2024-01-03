@@ -32,7 +32,7 @@ public class LocalDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS mawb_details (actual_pcs INTEGER, weight INTEGER, volume REAL, " +
+        db.execSQL("CREATE TABLE IF NOT EXISTS mawb_details (actual_pcs INTEGER, weight INTEGER, volume REAL, length INTEGER, width INTEGER, height INTEGER," +
                 "cargo_category TEXT, cargo_class TEXT, cargo_status TEXT, mawb_number TEXT, hawb_number TEXT, flight_number TEXT)");
     }
 

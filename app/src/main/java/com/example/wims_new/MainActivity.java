@@ -26,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     sleep(1000);
-                    startActivity(new Intent(MainActivity.this, LoginPage.class));
+                    Intent in = new Intent(MainActivity.this, LoginPage.class);
+                    startActivity(in);
+//                    startActivity(new Intent(MainActivity.this, LoginPage.class));
 //                    Animatoo.INSTANCE.animateSwipeLeft(MainActivity.this);
 
                     finish();

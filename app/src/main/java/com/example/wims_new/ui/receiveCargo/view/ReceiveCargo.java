@@ -187,6 +187,10 @@ public class ReceiveCargo extends AppCompatActivity {
 
     }
 
+//    public void getStatus (ArrayList<String> status) {
+//        this.status = status;
+//    }
+
     public void eventListener() {
         binding.flightListLayout.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -285,7 +289,7 @@ public class ReceiveCargo extends AppCompatActivity {
                 toShowLayout();
                 viewModel.getCargoCategory(ReceiveCargo.this, ReceiveCargo.this, binding);
                 viewModel.getCargoClass(ReceiveCargo.this, ReceiveCargo.this, binding);
-                viewModel.getCargoStatus(ReceiveCargo.this, ReceiveCargo.this, binding);
+//                viewModel.getCargoStatus(ReceiveCargo.this, ReceiveCargo.this, binding);
 //                viewModel.getCargoConditionList(ReceiveCargo.this, ReceiveCargo.this, binding);
                 viewModel.populatedHawbDetails(binding, selectedMawbs, selectedHawbs);
             }
@@ -450,7 +454,7 @@ public class ReceiveCargo extends AppCompatActivity {
 //                new Task_saveImages().execute();
                 AlertsAndLoaders loaders = new AlertsAndLoaders();
                 loaders.showAlert(4,"Are you sure?", "You want to confirm this cargo?", ReceiveCargo.this,saveCargo);
-//                viewModel.to_upload(uri, fnames, context, binding);
+                //viewModel.to_upload(uri, fnames, context, binding);
         }
         });
 
@@ -844,6 +848,8 @@ public class ReceiveCargo extends AppCompatActivity {
                 viewModel.insertMawbDetails(ReceiveCargo.this, ReceiveCargo.this, binding, uri, fnames, selectedMawbs.getMawbNumber(), db.getMawbDetails().getFlight_number(), "");
 
             }
+
+            //viewModel.to_upload(uri, fnames, context, binding);
 
 
         }
