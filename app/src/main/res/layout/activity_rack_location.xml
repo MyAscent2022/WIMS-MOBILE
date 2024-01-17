@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="20dp"
+    android:background="#F6F6F6"
     tools:context=".ui.storeCargo.releasing.view.RackLocation">
 
     <include
         android:layout_height="@dimen/_50sdp"
         android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         layout="@layout/header_layout"
         android:id="@+id/header_layout"/>
 
@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
+        android:layout_margin="@dimen/_10sdp"
         android:background="@drawable/search_bg"
         android:defaultFocusHighlightEnabled="true" />
 
@@ -38,7 +39,7 @@
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="match_parent"
-            android:background="@drawable/expand_down_double">
+            android:background="@drawable/expand_down_double1">
         </ImageView>
 
         <TextView

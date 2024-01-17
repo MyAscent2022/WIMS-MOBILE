@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/mawb_card"
             android:orientation="horizontal">
 
@@ -53,7 +53,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="125dp"
+                        android:layout_width="@dimen/_130sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -83,7 +83,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="227dp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -121,7 +121,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="125dp"
+                        android:layout_width="@dimen/_130sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -151,7 +151,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="227dp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -420,7 +420,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
+                        android:layout_height="@dimen/_50sdp"
                         android:hint="Select Cargo Category"
                         android:textColorHint="@color/placeholder"
                         app:errorEnabled="true"
@@ -470,7 +470,7 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_height="@dimen/_50sdp"
                                 android:hint="Select Cargo Class"
                                 android:textColorHint="@color/placeholder"
                                 app:errorEnabled="true"
@@ -515,7 +515,7 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_height="@dimen/_50sdp"
                                 android:hint="Select Cargo Status"
                                 android:textColorHint="@color/placeholder"
                                 app:errorEnabled="true"

@@ -137,7 +137,12 @@ public class AlertsAndLoaders {
                 sDialog = new SweetAlertDialog(context,
                         SweetAlertDialog.ERROR_TYPE);
                 sDialog.setTitleText("Oops...");
-                sDialog.setContentText("Something went wrong!");
+
+                if ("".equals(message)) {
+                    sDialog.setContentText("Something went wrong!");
+                } else {
+                    sDialog.setContentText(message);
+                }
 
                 sDialog.show();
                 break;

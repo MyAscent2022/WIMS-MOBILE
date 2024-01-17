@@ -6,10 +6,10 @@ public class StorageModel implements Serializable {
 
     int id;
     int actualPcs;
-    int cargoStatus;
-    int numberOfPackages;
-    int mawbPackages;
+    String cargoStatus;
     int rackUtilId;
+    String rackName;
+    String layerName;
     String classdesc;
     String hawbNumber;
     String mawbNumber;
@@ -39,20 +39,12 @@ public class StorageModel implements Serializable {
         this.actualPcs = actualPcs;
     }
 
-    public int getCargoStatus() {
+    public String getCargoStatus() {
         return cargoStatus;
     }
 
-    public void setCargoStatus(int cargoStatus) {
+    public void setCargoStatus(String cargoStatus) {
         this.cargoStatus = cargoStatus;
-    }
-
-    public int getNumberOfPackages() {
-        return numberOfPackages;
-    }
-
-    public void setNumberOfPackages(int numberOfPackages) {
-        this.numberOfPackages = numberOfPackages;
     }
 
     public String getClassdesc() {
@@ -85,5 +77,21 @@ public class StorageModel implements Serializable {
 
     public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
+    }
+
+    public String getRackName() {
+        return rackName;
+    }
+
+    public void setRackName(String rackName) {
+        this.rackName = rackName;
+    }
+
+    public String getLayerName() {
+        return layerName;
+    }
+
+    public void setLayerName(String layerName) {
+        this.layerName = layerName;
     }
 }

@@ -36,7 +36,7 @@
                 <ImageButton
                     android:id="@+id/edit_uld_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:background="@drawable/edit_icon">
 
@@ -176,51 +176,75 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="vertical"
-        android:background="@drawable/hawb_title"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="MAWB No."
-            android:textSize="14sp"
-            android:layout_marginTop="5dp"
-            android:textColor="#FFFFFF"
-            android:fontFamily="@font/manrope"/>
-
-        <TextView
-            android:id="@+id/mawb_no"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="000000"
-            android:textSize="24sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:fontFamily="@font/manrope"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F5F9"
-        android:orientation="vertical">
+        app:cardCornerRadius="15dp"
+        app:cardUseCompatPadding="true"
+        app:cardPreventCornerOverlap="true"
+        app:cardElevation="5dp">
 
-        <ListView
-            android:id="@+id/list_layout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="#00000000"
-            android:dividerHeight="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        </ListView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:background="@drawable/hawb_title"
+                android:layout_margin="@dimen/_10sdp">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="MAWB No."
+                    android:textSize="14sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/manrope"/>
+
+                <TextView
+                    android:id="@+id/mawb_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="000000"
+                    android:textSize="@dimen/_20ssp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/manrope"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp">
+
+                <ListView
+                    android:id="@+id/list_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="#00000000"
+                    android:dividerHeight="10dp">
+
+                </ListView>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
 
 </LinearLayout>

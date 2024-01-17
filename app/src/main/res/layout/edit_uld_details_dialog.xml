@@ -34,7 +34,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_margin="10dp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:orientation="vertical">
@@ -42,7 +42,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_20sdp"
                     android:text="UPDATE ULD NO:"
                     android:textColor="@color/blue"
                     android:textStyle="bold"></TextView>
@@ -51,15 +50,15 @@
                     android:id="@+id/update_uld_no"
                     style="@style/FormField"
                     android:layout_width="@dimen/_250sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginLeft="@dimen/_17sdp"
+                    android:layout_height="@dimen/_60sdp"
                     android:hint="ULD No"
                     app:errorEnabled="true"
                     app:hintTextColor="@color/placeholder">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/update_uld_no1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_50sdp"
                         android:maxLength="100"
                         android:textColor="@color/placeholder" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -68,7 +67,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_margin="10dp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:orientation="vertical">
@@ -76,7 +75,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_20sdp"
                     android:text="UPDATE ULD TYPE:"
                     android:textColor="@color/blue"
                     android:textStyle="bold">
@@ -86,8 +84,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="@dimen/_250sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginLeft="@dimen/_17sdp"
+                    android:layout_height="@dimen/_60sdp"
                     android:hint="ULD Type"
                     android:textColorHint="@color/placeholder"
                     app:errorEnabled="true"
@@ -97,7 +94,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/update_uld_type"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_50sdp"
                         android:inputType="textCapWords"
                         android:maxLength="100"
                         android:textColor="@color/light_grey" />

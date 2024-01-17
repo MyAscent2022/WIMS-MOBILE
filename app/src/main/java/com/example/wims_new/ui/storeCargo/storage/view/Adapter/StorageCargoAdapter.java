@@ -1,12 +1,16 @@
 package com.example.wims_new.ui.storeCargo.storage.view.Adapter;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.wims_new.R;
 import com.example.wims_new.model.FlightsModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
@@ -56,4 +60,6 @@ public class StorageCargoAdapter extends ArrayAdapter<StorageModel> {
         }
         return convertView;
     }
+
+
 }

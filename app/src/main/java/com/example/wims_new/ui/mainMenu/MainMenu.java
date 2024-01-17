@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.wims_new.R;
+import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityMainMenuBinding;
 import com.example.wims_new.ui.Login.view.LoginPage;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
@@ -17,6 +18,8 @@ import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
 public class MainMenu extends AppCompatActivity {
 
     private ActivityMainMenuBinding binding;
+    int role_id = 0;
+    private Bundle receiveBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,8 @@ public class MainMenu extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        receiveBundle = getIntent().getExtras();
+
         binding.receiveCargo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,8 +47,14 @@ public class MainMenu extends AppCompatActivity {
         binding.storeCargo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent in = new Intent(MainMenu.this, StoreCargoMenu.class);
-                startActivity(in);
+                if (role_id == 4 || role_id == 1) {
+                    Intent in = new Intent(MainMenu.this, StoreCargoMenu.class);
+                    startActivity(in);
+                } else {
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(1, "","Invalid Action", MainMenu.this, null);
+                }
+
             }
         });
 

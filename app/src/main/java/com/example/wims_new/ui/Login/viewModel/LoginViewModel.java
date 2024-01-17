@@ -56,9 +56,12 @@ public class LoginViewModel {
                             if (resp.getStatusCode() == 200) {
                                 user = resp.getData();
                                 SharedPref sharedPref = new SharedPref();
+
                                 sharedPref.writePrefString(context, sharedPref.USER_ID, String.valueOf(user.getId()));
                                 Intent intent = new Intent(context, MainMenu.class);
+                                intent.putExtra("role_id", user.getRoleId());
                                 activity.startActivity(intent);
+
                             } else {
                                 alertsAndLoaders.showAlert(1, "","", context, activity.goToMainMenu);
                             }

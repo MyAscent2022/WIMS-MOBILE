@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SaveUldNumberModel {
     UldModel ulds;
-    String uld_number;
+    String uldNumber;
     String[] mawbs;
 
 
@@ -17,12 +17,12 @@ public class SaveUldNumberModel {
         this.ulds = ulds;
     }
 
-    public String getUld_number() {
-        return uld_number;
+    public String getUldNumber() {
+        return uldNumber;
     }
 
-    public void setUld_number(String uld_number) {
-        this.uld_number = uld_number;
+    public void setUldNumber(String uldNumber) {
+        this.uldNumber = uldNumber;
     }
 
     public String[] getMawbs() {
