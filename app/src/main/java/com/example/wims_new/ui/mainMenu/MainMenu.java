@@ -2,6 +2,7 @@ package com.example.wims_new.ui.mainMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,13 +48,15 @@ public class MainMenu extends AppCompatActivity {
         binding.storeCargo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (role_id == 4 || role_id == 1) {
-                    Intent in = new Intent(MainMenu.this, StoreCargoMenu.class);
-                    startActivity(in);
-                } else {
-                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                    alertsAndLoaders.showAlert(1, "","Invalid Action", MainMenu.this, null);
-                }
+                Intent in = new Intent(MainMenu.this, StoreCargoMenu.class);
+                startActivity(in);
+//                if (role_id == 4 || role_id == 1) {
+//                    Intent in = new Intent(MainMenu.this, StoreCargoMenu.class);
+//                    startActivity(in);
+//                } else {
+//                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//                    alertsAndLoaders.showAlert(1, "","Invalid Action", MainMenu.this, null);
+//                }
 
             }
         });
@@ -81,5 +84,27 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        AlertDialog dialog= new AlertDialog.Builder(MainMenu.this)
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes",null)
+                .setNegativeButton("Cancel",null)
+                .show();
+        Button positiveButton=dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent in =new Intent(MainMenu.this,LoginPage.class);
+                    startActivity(in);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 }

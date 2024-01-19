@@ -3,14 +3,14 @@ package com.example.wims_new.model;
 import java.io.Serializable;
 
 public class UldContainerTypeModel implements Serializable {
-    long id;
+    int id;
     String type;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

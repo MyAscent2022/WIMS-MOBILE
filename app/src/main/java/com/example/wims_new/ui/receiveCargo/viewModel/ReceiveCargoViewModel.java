@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.wims_new.BuildConfig;
 import com.example.wims_new.LocalDB.LocalDBHelper;
@@ -42,8 +44,10 @@ import com.example.wims_new.model.ResBody;
 import com.example.wims_new.model.SaveUldNumberModel;
 import com.example.wims_new.model.UldContainerResponse;
 import com.example.wims_new.model.UldContainerTypeModel;
+import com.example.wims_new.model.UldImages;
 import com.example.wims_new.model.UldModel;
 import com.example.wims_new.model.UldResponse;
+import com.example.wims_new.model.UldTypeModel;
 import com.example.wims_new.model.UldTypesModel;
 import com.example.wims_new.ui.receiveCargo.adapter.FlightListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.HawbListAdapter;
@@ -95,6 +99,7 @@ public class ReceiveCargoViewModel {
     private List<UldTypesModel> uld_types;
     private List<UldContainerTypeModel> containerTypes;
     private List<UldTypesModel> uld_id;
+    private MutableLiveData<List<UldModel>> uldLiveData = new MutableLiveData<>();
     LocalDBHelper db;
     String flight_no = "";
     String registry_no = "";
@@ -167,10 +172,11 @@ public class ReceiveCargoViewModel {
                             searchUlds = ulds;
                             binding.uldLayout.noOfUld.setText(ulds.size() + "");
                             viewData2(activity, binding);
-                            binding.uldLayout.refreshLayout.setRefreshing(false);
+                            uldLiveData.setValue(ulds);
                         } else {
                             alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                         }
+                        binding.uldLayout.refreshLayout.setRefreshing(false);
                     } else {
                         alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                     }
@@ -213,7 +219,6 @@ public class ReceiveCargoViewModel {
 //                                    getHawb(context,activity,binding, mawbs.get(i).getMawbNumber());
 //
 //                                }
-
                                 activity.getMawb(mawbs);
                             } else {
                                 mawbs = mawbResp.getData().getMawbs();
@@ -484,12 +489,9 @@ public class ReceiveCargoViewModel {
         MawbDetails mawbDetails = new MawbDetails();
         SharedPref util = new SharedPref();
         db = new LocalDBHelper(context);
-//      -- SAVE INTO ACCEPTANCE
 
         mawbDetails = db.getMawbDetails();
         System.out.println("ACTUAL PCS >>>>>>>>>>>>>> " + mawbDetails.getActualPcs());
-
-
 
 //        mawbDetails.setCargoCategory(binding.mawbDetails.cargoCategory.getText().toString());
 //        System.out.println("setCargoCategoryId " + binding.mawbDetails.cargoCategory.getText().toString());
@@ -520,7 +522,6 @@ public class ReceiveCargoViewModel {
 
                         uploadImage(context, activity, binding, uri, dialog, hawb_id, mawb_number);
 
-//                        to_upload(uri,fname,context, binding);
                     } else {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
@@ -546,6 +547,58 @@ public class ReceiveCargoViewModel {
         });
 
     }
+
+    public void saveUldImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, SweetAlertDialog dialog, String flight_number, String uld_number) {
+
+        //response.setFiles(getFilePart(uri,context));
+
+
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<Integer> call = services.saveUldImage(getFilePart(uri,context), flight_number, uld_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
+
+
+        SweetAlertDialog finalDialog = dialog;
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
+                try {
+                    finalDialog.cancel();
+                    Integer res = response.body();
+
+                    if (res == 1) {
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
+//                        to_upload(uri,fname,context, binding);
+                    } else {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(2, "", "Error", context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
+
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
+
+
 
 
     public void uploadImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, SweetAlertDialog dialog, int hawb_id, String mawb_number) {

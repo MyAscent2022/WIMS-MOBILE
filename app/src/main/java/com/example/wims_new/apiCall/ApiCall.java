@@ -61,7 +61,12 @@ public interface ApiCall {
 
     @Multipart
     @POST("upload_storage_image")
-    Call<Integer> uploadStorageImage(@Part List<MultipartBody.Part> files, @Query("hawb_id") int hawb_id, @Query("mawb_number") String mawb_number);
+    Call<Integer> uploadStorageImage(@Part List<MultipartBody.Part> files, @Query("hawb_id") int hawb_id, @Query("mawb_number") String mawb_number, @Query("cargo_condition1") String cargo_condition1, @Query("cargo_condition2") String cargo_condition2, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
+
+    @Multipart
+    @POST("save_uld_image")
+    Call<Integer> saveUldImage(@Part List<MultipartBody.Part> files, @Query("uld_condition1") String uld_condition1, @Query("uld_condition2") String uld_condition2, @Query("flight_number") String flight_number, @Query("uld_number") String uld_number, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
+
 
     @GET("get_uld_type")
     Call<UldResponse>getUldTypes();

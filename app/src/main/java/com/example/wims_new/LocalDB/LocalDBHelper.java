@@ -152,11 +152,11 @@ public class LocalDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertStorageDetails(String stored_pcs, String rack_name, String layer_name) {
+    public boolean insertUldNumber(String uld_number, String uld_condition) {
         db = getWritableDatabase();
         try {
-            db.execSQL("INSERT INTO storage_details(stored_pcs, rack_name, layer_name)" +
-                    "VALUES ('" + stored_pcs + "', '" + rack_name + "', '" + layer_name + "')");
+            db.execSQL("INSERT INTO storage_details(uld_number, uld_condition)" +
+                    "VALUES ('" + uld_number + "', '" + uld_condition + "')");
         } catch (Exception e) {
             e.printStackTrace();
             return false;

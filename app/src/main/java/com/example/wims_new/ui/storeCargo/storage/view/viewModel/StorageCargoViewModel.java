@@ -321,7 +321,7 @@ public class StorageCargoViewModel {
 
                     if (response.code() == 200) {
 //                        -- SUCCESS MESSAGE
-                        uploadImage(context, activity, uri, dialog, hawb_id, mawb_number);
+                        uploadImage(context, binding, activity, uri, dialog, hawb_id, mawb_number);
 //                        alertsAndLoaders.showAlert(0, "", "Successfully updated Storage", context, activity.goToCargoList);
                     } else {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -430,14 +430,14 @@ public class StorageCargoViewModel {
         }
     }
 
-    public void uploadImage(Context context, StorageCargo activity, List<Uri> uri,SweetAlertDialog dialog, int hawb_id, String mawb_number) {
+    public void uploadImage(Context context, ActivityStorageCargoBinding binding, StorageCargo activity, List<Uri> uri,SweetAlertDialog dialog, int hawb_id, String mawb_number) {
 
         //response.setFiles(getFilePart(uri,context));
 
 
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<Integer> call = services.uploadStorageImage(getFilePart(uri,context), hawb_id, mawb_number);
+        Call<Integer> call = services.uploadStorageImage(getFilePart(uri,context), hawb_id, mawb_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
         SweetAlertDialog finalDialog = dialog;
         call.enqueue(new Callback<Integer>() {
             @Override
