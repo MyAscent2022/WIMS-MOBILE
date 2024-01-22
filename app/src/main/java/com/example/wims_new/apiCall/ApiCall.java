@@ -11,6 +11,8 @@ import com.example.wims_new.model.MawbDetails;
 import com.example.wims_new.model.MawbResponse;
 import com.example.wims_new.model.SaveUldNumberModel;
 import com.example.wims_new.model.UldContainerResponse;
+import com.example.wims_new.model.UldImagesResp;
+import com.example.wims_new.model.UldImagesResponse;
 import com.example.wims_new.model.UldModel;
 import com.example.wims_new.model.UldResponse;
 import com.example.wims_new.ui.Login.Model.UserResponse;
@@ -34,6 +36,9 @@ public interface ApiCall {
 
     @GET("user_login")
     Call<UserResponse> getUser(@Query("username") String username, @Query("passkey") String passkey);
+
+    @GET("user_logout")
+    Call<UserResponse> logoutUser(@Query("user_id") int user_id);
 
     @GET("flights")
     Call<FlightsResponse> searchFlights(@Query("user_id") int user_id);
@@ -65,7 +70,7 @@ public interface ApiCall {
 
     @Multipart
     @POST("save_uld_image")
-    Call<Integer> saveUldImage(@Part List<MultipartBody.Part> files, @Query("uld_condition1") String uld_condition1, @Query("uld_condition2") String uld_condition2, @Query("flight_number") String flight_number, @Query("uld_number") String uld_number, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
+    Call<UldImagesResponse> saveUldImage(@Part List<MultipartBody.Part> files, @Query("uld_condition1") String uld_condition1, @Query("uld_condition2") String uld_condition2, @Query("flight_number") String flight_number, @Query("uld_number") String uld_number, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
 
 
     @GET("get_uld_type")
@@ -110,4 +115,6 @@ public interface ApiCall {
     @GET("get_cargo_images")
     Call<ImagesResponse> getCargoImages(@Query("cargo_activity_log_id") int cargoActivityLogId);
 
+    @GET("get_uld_images")
+    Call<UldImagesResp> getUldImages(@Query("flight_number") String flight_number, @Query("uld_number") String uld_number);
 }

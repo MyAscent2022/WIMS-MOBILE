@@ -434,7 +434,10 @@ public class StorageCargoViewModel {
 
         //response.setFiles(getFilePart(uri,context));
 
-
+        List<String> modifiedFilePaths = new ArrayList<>();
+        for (Uri u : uri) {
+            modifiedFilePaths.add(u.getPath().replace("\\", "/"));
+        }
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
         Call<Integer> call = services.uploadStorageImage(getFilePart(uri,context), hawb_id, mawb_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());

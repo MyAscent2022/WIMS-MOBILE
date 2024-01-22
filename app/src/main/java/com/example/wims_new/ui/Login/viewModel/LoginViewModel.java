@@ -84,8 +84,51 @@ public class LoginViewModel {
         }
     }
 
+    public void getUserLogout(Context context, MainMenu activity) {
+        resp = new UserResponse();
+        SharedPref util = new SharedPref();
 
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog = alertsAndLoaders.showAlert(3, "Logged out. . .", "", context, null);
 
+        try {
+            ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+            Call<UserResponse> call = services.logoutUser(Integer.parseInt(util.readPrefString(context, util.USER_ID)));
+
+            call.enqueue(new Callback<UserResponse>() {
+                @Override
+                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                    dialog.cancel();
+
+                    try {
+                        if (response.code() == 200) {
+                            resp = response.body();
+                            if (resp.getStatusCode() == 200) {
+                                user = resp.getData();
+                                Intent intent = new Intent(context, LoginPage.class);
+                                activity.startActivity(intent);
+
+                            } else {
+                                alertsAndLoaders.showAlert(1, "","", context, null);
+                            }
+                        } else {
+                            alertsAndLoaders.showAlert(1, "","", context, null);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserResponse> call, Throwable t) {
+                    Log.e("Error: ", t.getMessage());
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

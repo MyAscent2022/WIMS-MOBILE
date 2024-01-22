@@ -10,6 +10,7 @@ public class UldImages implements Serializable {
     int uldConditionId;
     String flight_number;
     String uldNumber;
+    String uldCondition;
 
     public int getId() {
         return id;
@@ -65,5 +66,13 @@ public class UldImages implements Serializable {
 
     public void setUldNumber(String uldNumber) {
         this.uldNumber = uldNumber;
+    }
+
+    public String getUldCondition() {
+        return uldCondition;
+    }
+
+    public void setUldCondition(String uldCondition) {
+        this.uldCondition = uldCondition;
     }
 }

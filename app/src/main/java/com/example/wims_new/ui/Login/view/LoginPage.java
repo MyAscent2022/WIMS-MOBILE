@@ -91,6 +91,8 @@ public class LoginPage extends AppCompatActivity {
 //            new FunctionsMethods().goToActivity(LoginActivity.this, new ActivityList().getActivityList().get(2), LoginActivity.this, true);
         }
     };
+
+
 //        binding.btnLogin.setOnClickListener(view -> {
 
 //            String validate_message=viewModel.checkNullValues(binding);

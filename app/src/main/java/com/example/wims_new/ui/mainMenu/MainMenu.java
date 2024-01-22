@@ -1,10 +1,12 @@
 package com.example.wims_new.ui.mainMenu;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,14 +15,17 @@ import com.example.wims_new.R;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityMainMenuBinding;
 import com.example.wims_new.ui.Login.view.LoginPage;
+import com.example.wims_new.ui.Login.viewModel.LoginViewModel;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
 import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
+import com.example.wims_new.utils.FunctionInterface;
 
 public class MainMenu extends AppCompatActivity {
 
     private ActivityMainMenuBinding binding;
     int role_id = 0;
     private Bundle receiveBundle;
+    private LoginViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class MainMenu extends AppCompatActivity {
         setContentView(view);
 
         receiveBundle = getIntent().getExtras();
+        viewModel = new LoginViewModel();
 
         binding.receiveCargo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +80,9 @@ public class MainMenu extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         try {
-                            Intent in = new Intent(MainMenu.this, LoginPage.class);
-                            startActivity(in);
+                            viewModel.getUserLogout(MainMenu.this, MainMenu.this);
+//                            Intent in = new Intent(MainMenu.this, LoginPage.class);
+//                            startActivity(in);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -107,4 +114,15 @@ public class MainMenu extends AppCompatActivity {
             }
         });
     }
+
+    public FunctionInterface.Function goToLoginPage = new FunctionInterface.Function() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void perform() {
+            Bundle bundle = new Bundle();
+            Intent in = new Intent(MainMenu.this, LoginPage.class);
+            startActivity(in);
+//            new FunctionsMethods().goToActivity(LoginActivity.this, new ActivityList().getActivityList().get(2), LoginActivity.this, true);
+        }
+    };
 }
