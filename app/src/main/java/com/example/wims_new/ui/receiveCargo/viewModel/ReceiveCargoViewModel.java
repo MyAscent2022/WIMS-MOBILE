@@ -175,7 +175,7 @@ public class ReceiveCargoViewModel {
                     if (response.code() == 200) {
                         uldResp = response.body();
                         if (resp.getStatusCode() == 200) {
-                            ulds = uldResp.getData().getUldList();
+                            ulds = uldResp.getData().getUldList1();
                             searchUlds = ulds;
                             binding.uldLayout.noOfUld.setText(ulds.size() + "");
                             viewData2(activity, binding);

@@ -4,25 +4,13 @@ import java.io.Serializable;
 
 public class UldModel implements Serializable {
     long id;
-    String uldNo;
-    String uldType;
-    int uldTypeId;
-    int uldStatus;
-    String flightNumber;
+    String uldNumber;
     int totalCount;
-    int shortLanded;
+    String flightNumber;
+    int uldTypeId;
     int totalExpected;
-    int totalWeight;
-    UldTypeModel uldTypeModel;
-
-
-    public int getTotalWeight() {
-        return totalWeight;
-    }
-
-    public void setTotalWeight(int totalWeight) {
-        this.totalWeight = totalWeight;
-    }
+    String type;
+    int totalMawb;
 
     public long getId() {
         return id;
@@ -32,44 +20,12 @@ public class UldModel implements Serializable {
         this.id = id;
     }
 
-    public String getUldNo() {
-        return uldNo;
+    public String getUldNumber() {
+        return uldNumber;
     }
 
-    public void setUldNo(String uldNo) {
-        this.uldNo = uldNo;
-    }
-
-    public String getUldType() {
-        return uldType;
-    }
-
-    public void setUldType(String uldType) {
-        this.uldType = uldType;
-    }
-
-    public int getUldTypeId() {
-        return uldTypeId;
-    }
-
-    public void setUldTypeId(int uldTypeId) {
-        this.uldTypeId = uldTypeId;
-    }
-
-    public int getUldStatus() {
-        return uldStatus;
-    }
-
-    public void setUldStatus(int uldStatus) {
-        this.uldStatus = uldStatus;
-    }
-
-    public String getFlightNumber() {
-        return flightNumber;
-    }
-
-    public void setFlightNumber(String flightNumber) {
-        this.flightNumber = flightNumber;
+    public void setUldNumber(String uldNumber) {
+        this.uldNumber = uldNumber;
     }
 
     public int getTotalCount() {
@@ -80,12 +36,20 @@ public class UldModel implements Serializable {
         this.totalCount = totalCount;
     }
 
-    public int getShortLanded() {
-        return shortLanded;
+    public String getFlightNumber() {
+        return flightNumber;
     }
 
-    public void setShortLanded(int shortLanded) {
-        this.shortLanded = shortLanded;
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public int getUldTypeId() {
+        return uldTypeId;
+    }
+
+    public void setUldTypeId(int uldTypeId) {
+        this.uldTypeId = uldTypeId;
     }
 
     public int getTotalExpected() {
@@ -96,11 +60,19 @@ public class UldModel implements Serializable {
         this.totalExpected = totalExpected;
     }
 
-    public UldTypeModel getUldTypeModel() {
-        return uldTypeModel;
+    public String getType() {
+        return type;
     }
 
-    public void setUldTypeModel(UldTypeModel uldTypeModel) {
-        this.uldTypeModel = uldTypeModel;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getTotalMawb() {
+        return totalMawb;
+    }
+
+    public void setTotalMawb(int totalMawb) {
+        this.totalMawb = totalMawb;
     }
 }

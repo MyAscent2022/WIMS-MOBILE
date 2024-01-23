@@ -32,9 +32,9 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
-            String uld_no = getItem(position).getUldNo();
-            String uld_type = getItem(position).getUldType();
-            int te = getItem(position).getTotalWeight();
+            String uld_no = getItem(position).getUldNumber();
+            String uld_type = getItem(position).getType();
+            int te = getItem(position).getTotalExpected();
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
