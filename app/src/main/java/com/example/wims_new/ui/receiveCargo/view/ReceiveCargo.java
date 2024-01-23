@@ -409,6 +409,7 @@ public class ReceiveCargo extends AppCompatActivity {
             public void onClick(View view) {
                 is_uld = true;
                 is_uld_image = true;
+//                layout_id = 10;
                 layout_id = 7;
                 binding.cargoImagesLayout.uldNumber.setText(selectedUlds.getUldNo());
 
@@ -431,15 +432,15 @@ public class ReceiveCargo extends AppCompatActivity {
             }
         });
 
-        binding.uldImagesLayout.cancelBtn.setOnClickListener(new View.OnClickListener() {
+        binding.uldImagesLayout.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layout_id--;
+                layout_id = 4;
                 toShowLayout();
             }
         });
 
-        binding.uldImagesLayout.uploadUld.setOnClickListener(new View.OnClickListener() {
+        binding.uldImagesLayout.uploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertsAndLoaders loaders = new AlertsAndLoaders();
@@ -459,7 +460,7 @@ public class ReceiveCargo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 is_uld_image = false;
-                System.out.println("is_uld_image " + is_uld_image);
+                is_uld = false;
                 db = new LocalDBHelper(context);
                 viewModel.getCargoConditionList(ReceiveCargo.this, ReceiveCargo.this, binding);
 
@@ -499,10 +500,19 @@ public class ReceiveCargo extends AppCompatActivity {
             }
         });
 
-        binding.uldImagesLayout.btnAdd.setOnClickListener(new View.OnClickListener() {
+        binding.uldImagesLayout.picture1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Add list view of another image line
+                is_pic1 = true;
+                askCameraPermission();
+            }
+        });
+
+        binding.uldImagesLayout.picture2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                is_pic1 = false;
+                askCameraPermission();
             }
         });
 
@@ -556,13 +566,11 @@ public class ReceiveCargo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(is_uld_image) {
+                    is_uld = true;
                     AlertsAndLoaders loaders = new AlertsAndLoaders();
                     loaders.showAlert(4,"Are you sure?", "You want to upload this ULD?", ReceiveCargo.this,uploadCargo);
-                    binding.mawbListLayout.uldTitle.setText("VIEW ULD IMAGES");
-
-//                    UldImagesAdapter adapter = new UldImagesAdapter(ReceiveCargo.this, R.layout.uploaded_image_line, uldImages);
-//                    binding.uldImagesLayout.listView.setAdapter(adapter);
                 } else {
+//                    is_uld = false;
                     binding.mawbDetails.uploadCargoImageLayout.setVisibility(View.GONE);
                     binding.mawbDetails.viewCargoImageLayout.setVisibility(View.VISIBLE);
                     binding.mawbDetails.listTitle.setVisibility(View.VISIBLE);
@@ -815,6 +823,15 @@ public class ReceiveCargo extends AppCompatActivity {
         }
     };
 
+    public FunctionInterface.Function backToMain = new FunctionInterface.Function() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void perform() {
+//            Bundle bundle = new Bundle();
+
+        }
+    };
+
     private void toShowLayout() {
         viewModel.toShowLayout(binding, layout_id, is_uld, is_uploaded);
     }
@@ -993,7 +1010,8 @@ public class ReceiveCargo extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void perform() {
-            layout_id = 3;
+//            layout_id = 3;
+            layout_id = 2;
             toShowLayout();
         }
 
@@ -1021,7 +1039,7 @@ public class ReceiveCargo extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void perform() {
-            is_uld_image = true;
+            is_uld_image = false;
             viewModel.saveUldImage(ReceiveCargo.this, ReceiveCargo.this, binding, uri, selectedFlights.getFlightNumber(), selectedUlds.getUldNo());
         }
 
@@ -1033,6 +1051,10 @@ public class ReceiveCargo extends AppCompatActivity {
         this.mawbList = mawbs;
         MawbDialogAdapter adapter = new MawbDialogAdapter(this, R.layout.select_mawb_list_line, mawbList);
         listView.setAdapter(adapter);
+    }
+
+    public void setUriToNull() {
+        uri = new ArrayList<>();
     }
 
     public void getUldTypes(List<UldTypesModel> types){

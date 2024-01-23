@@ -52,14 +52,14 @@
                 android:id="@+id/cargo_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope"
-                android:textStyle="bold"
                 android:layout_marginLeft="@dimen/_10sdp"
-                android:textColor="@color/blue"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textSize="@dimen/medium_txt"
+                android:fontFamily="@font/manrope"
                 android:text="CARGO IMAGES"
-                android:visibility="visible"/>
+                android:textColor="@color/blue"
+                android:textSize="@dimen/medium_txt"
+                android:textStyle="bold"
+                android:visibility="visible" />
 
         </LinearLayout>
 

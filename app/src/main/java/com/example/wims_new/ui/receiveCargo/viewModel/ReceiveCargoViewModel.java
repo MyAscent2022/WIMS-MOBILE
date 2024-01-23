@@ -314,6 +314,7 @@ public class ReceiveCargoViewModel {
         binding.mawbListLayout.getRoot().setVisibility(View.GONE);
         binding.hawbListLayout.getRoot().setVisibility(View.GONE);
         binding.mawbDetails.getRoot().setVisibility(View.GONE);
+        binding.uldImagesLayout.getRoot().setVisibility(View.GONE);
         binding.cargoImagesLayout.getRoot().setVisibility(View.GONE);
         binding.headerLayout.getRoot().setVisibility(View.VISIBLE);
         System.out.println("LAYOUT ID >>>>>>>>>>>>>>>>>>>>>>" +  layout_id);
@@ -359,6 +360,8 @@ public class ReceiveCargoViewModel {
             binding.cargoImagesLayout.getRoot().setVisibility(View.VISIBLE);
         } else if (layout_id == 9) {
             binding.cargoImageListLayout.getRoot().setVisibility(View.VISIBLE);
+        } else if (layout_id == 10) {
+            binding.uldImagesLayout.getRoot().setVisibility(View.VISIBLE);
         }
     }
 
@@ -442,6 +445,8 @@ public class ReceiveCargoViewModel {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
                             condition = mawbResp.getCondition();
+//                            binding.uldImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+//                            binding.uldImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
 
                             binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
                             binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
@@ -579,6 +584,13 @@ public class ReceiveCargoViewModel {
                     res = response.body();
 
                     if (res.getStatusCode() == 200) {
+                        activity.setUriToNull();
+                        binding.cargoImagesLayout.picture1.setImageResource(R.drawable.camera);
+                        binding.cargoImagesLayout.picture2.setImageResource(R.drawable.camera);
+                        binding.cargoImagesLayout.spinner1.setSelection(0);
+                        binding.cargoImagesLayout.spinner2.setSelection(0);
+                        binding.cargoImagesLayout.remarks.setText("");
+                        binding.cargoImagesLayout.remarks2.setText("");
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
                         alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
 //                        to_upload(uri,fname,context, binding);
@@ -615,10 +627,6 @@ public class ReceiveCargoViewModel {
     public void uploadImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, SweetAlertDialog dialog, int hawb_id, String mawb_number) {
 
         //response.setFiles(getFilePart(uri,context));
-        List<String> modifiedFilePaths = new ArrayList<>();
-        for (Uri u : uri) {
-            modifiedFilePaths.add(u.getPath().replace("\\", "/"));
-        }
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
         Call<Integer> call = services.uploadImage(getFilePart(uri,context), hawb_id, mawb_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
@@ -635,7 +643,7 @@ public class ReceiveCargoViewModel {
 
                     if (res == 1) {
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
+                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMain);
 //                        to_upload(uri,fname,context, binding);
                     } else {
 //                        JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -759,10 +767,6 @@ public class ReceiveCargoViewModel {
     private List<MultipartBody.Part> getFilePart(List<Uri> uri, Context context){
         List<MultipartBody.Part> filePart = new ArrayList<>();
         for(Uri u:uri){
-            String originalPath = u.getPath();
-            String separator = File.separator.equals("\\") ? "\\\\" : "/";
-            String modifiedPath = originalPath.replace("\\", separator);
-
             File file=compressFile(u,context);
             filePart.add(MultipartBody.Part.createFormData("file[]", new RotateImage().getFileNameFromUri(u, context), RequestBody.create(MediaType.parse("application/octet-stream"), file)));
         }
@@ -1161,7 +1165,7 @@ public class ReceiveCargoViewModel {
     private void viewUldImg(Context context, ActivityReceiveCargoBinding binding) {
         try {
             UldImagesAdapter adapter1 = new UldImagesAdapter(context, R.layout.store_cargo_images_line, images);
-            binding.uldImagesLayout.listView.setAdapter(adapter1);
+//            binding.uldImagesLayout.listView.setAdapter(adapter1);
         } catch (Exception e) {
             e.printStackTrace();
         }
