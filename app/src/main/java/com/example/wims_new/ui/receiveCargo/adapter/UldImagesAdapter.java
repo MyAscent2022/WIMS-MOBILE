@@ -55,9 +55,9 @@ public class UldImagesAdapter extends ArrayAdapter<UldImages> {
     public void show_image(String filename, ImageView img){
 
 
-        String base_url = "http://192.168.20.179:33913/wims_api/";
+//        String base_url = "http://192.168.20.60:33913/wims_api/";
 //        String base_url = "http://112.199.119.250:33911/wims_api/";
-//        String base_url = "http://112.199.119.250:8030/wims_api/";
+        String base_url = "http://112.199.119.250:8030/wims_api/";
         //String base_url=BuildConfig.DEVICE_BASE_URL;
         String link = base_url + "view_checklist_image/?file_path=" + filename;
         Glide.with(mContext).load(link).into(img);
