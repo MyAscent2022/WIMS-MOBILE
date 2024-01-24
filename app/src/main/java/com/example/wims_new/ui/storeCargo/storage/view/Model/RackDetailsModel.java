@@ -11,7 +11,6 @@ public class RackDetailsModel implements Serializable {
     String mawbNumber;
     String hawbNumber;
     String classdesc;
-    String storagePersonnel;
     String rackName;
     String layerName;
 
@@ -70,14 +69,6 @@ public class RackDetailsModel implements Serializable {
 
     public void setClassdesc(String classdesc) {
         this.classdesc = classdesc;
-    }
-
-    public String getStoragePersonnel() {
-        return storagePersonnel;
-    }
-
-    public void setStoragePersonnel(String storagePersonnel) {
-        this.storagePersonnel = storagePersonnel;
     }
 
     public String getRackName() {
