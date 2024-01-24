@@ -117,4 +117,7 @@ public interface ApiCall {
 
     @GET("get_uld_images")
     Call<UldImagesResp> getUldImages(@Query("flight_number") String flight_number, @Query("uld_number") String uld_number);
+
+    @POST("save_releasing_cargo")
+    Call<ReleaseCargoResponse> saveReleaseCargo(@Query("mawb_number") String mawb_number, @Query("hawb_number") String hawb_number, @Query("flight_number") String flight_number, @Query("user_id") int user_id);
 }
