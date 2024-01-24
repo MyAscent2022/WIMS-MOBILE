@@ -228,7 +228,6 @@ public class StorageCargoViewModel {
                         binding.cargoDetails.hawbNo.setText(rackDetails.getHawbNumber());
                         binding.cargoDetails.totalWeight.setText(String.valueOf(rackDetails.getWeight()));
                         binding.cargoDetails.cargoClass.setText(rackDetails.getClassdesc());
-                        binding.cargoDetails.storagePersonnel.setText(rackDetails.getStoragePersonnel());
                         binding.cargoDetails.rcvPcs.setText(String.valueOf(rackDetails.getActualPcs()));
 
                         binding.cargoDetails.storedItemPcs.setText(String.valueOf(rackDetails.getActualPcs()));

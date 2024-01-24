@@ -91,6 +91,13 @@ public class StorageCargo extends AppCompatActivity {
 
     private void eventHandler(){
 
+        binding.headerLayout.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_id--;
+                toShowLayout();
+            }
+        });
 
         binding.mawbList.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
