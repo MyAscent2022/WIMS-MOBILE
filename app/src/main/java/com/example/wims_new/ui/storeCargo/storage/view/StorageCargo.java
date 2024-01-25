@@ -116,6 +116,14 @@ public class StorageCargo extends AppCompatActivity {
             }
         });
 
+        binding.cargoDetails.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layout_id--;
+                toShowLayout();
+            }
+        });
+
         binding.mawbGallery.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +141,8 @@ public class StorageCargo extends AppCompatActivity {
                 binding.cargoDetails.totalWeight.setText("");
                 binding.cargoDetails.cargoClass.setText(selectedCargo.getCargoStatus());
                 binding.cargoDetails.storagePersonnel.setText("");
-                binding.cargoDetails.rcvPcs.setText("");
+                binding.cargoDetails.storedItemPcs.setText(selectedCargo.getActualPcs());
+                binding.cargoDetails.rcvPcs.setText(selectedCargo.getActualPcs());
                 binding.cargoDetails.rackName.setText(selectedCargo.getRackName());
                 binding.cargoDetails.layerName.setText(selectedCargo.getLayerName());
 

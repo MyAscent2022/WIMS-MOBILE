@@ -6,6 +6,8 @@ public class SaveUldNumberModel {
     UldModel ulds;
     String uldNumber;
     String[] mawbs;
+    String flightNumber;
+    String uldType;
 
 
 
@@ -31,5 +33,21 @@ public class SaveUldNumberModel {
 
     public void setMawbs(String[] mawbs) {
         this.mawbs = mawbs;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public String getUldType() {
+        return uldType;
+    }
+
+    public void setUldType(String uldType) {
+        this.uldType = uldType;
     }
 }

@@ -143,6 +143,7 @@ public class ReceiveCargo extends AppCompatActivity {
     boolean has_hawb =false;
     ListView listView;
     AutoCompleteTextView uld_type, update_uld_type;
+    String uld_type1 = "", update_uld_type1 = "";
 
     LocalDBHelper db;
 
@@ -863,12 +864,29 @@ public class ReceiveCargo extends AppCompatActivity {
 //        -- SET LIST OF MAWBS
         viewModel.getMawbList(context,this,binding,"",false,selectedFlights.getFlightNumber(), true);
 
+        uld_type.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                uld_type1 = uld_type.getText().toString().trim();
+            }
+        });
         uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                uld_id = uld_type.getId();
 //                System.out.println("ULD TYPE ID >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + uld_id);
-//                model.setUldTypeId(uld_id);
+//                uld_type1 = uld_type.getText().toString().trim();
+//                model.setUldTypeId(getUldContainers());
             }
 
             @Override
@@ -939,6 +957,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
         updateUldNumberModel = new SaveUldNumberModel();
 
+        uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
         update_uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
 //        uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getUldTypes(context,this,binding)));
 
@@ -946,9 +965,27 @@ public class ReceiveCargo extends AppCompatActivity {
         update_uld_no.setText(selectedUlds.getUldNumber());
 
 
+        update_uld_type.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                update_uld_type1 = update_uld_type.getText().toString().trim();
+            }
+        });
+
         update_uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                update_uld_type1 = update_uld_type.getText().toString().trim();
 //                int uld_id = update_uld_type.getId();
 //                updateUldNumberModel.getUlds().setUldTypeId(uld_id);
             }
@@ -1072,7 +1109,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
     public int getUldContainers() {
         for(UldContainerTypeModel c : containerList) {
-            if (c.getType().equals(uld_type.getText().toString().trim()) || c.getType().equals(update_uld_type.getText().toString().trim())) {
+            if (c.getType().equals(uld_type1) || c.getType().equals(update_uld_type1)) {
                 return c.getId();
             }
         }
