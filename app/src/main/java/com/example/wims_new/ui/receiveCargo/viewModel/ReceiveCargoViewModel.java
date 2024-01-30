@@ -535,9 +535,8 @@ public class ReceiveCargoViewModel {
                         uploadImage(context, activity, binding, uri, dialog, hawb_id, mawb_number);
 
                     } else {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                        alertsAndLoaders.showAlert(2, "", res.getMessage(), context, null);
                     }
 
                 } catch (Exception e) {
@@ -550,9 +549,10 @@ public class ReceiveCargoViewModel {
             @Override
             public void onFailure(Call<MawbResponse> call, Throwable t) {
                 Log.e("Error:", t.getMessage());
-
                 System.out.println("Check your connection");
                 Log.e("Error:", t.getMessage());
+                dialog.cancel();
+
                 AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
                 alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
             }
@@ -627,9 +627,23 @@ public class ReceiveCargoViewModel {
     public void uploadImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, SweetAlertDialog dialog, int hawb_id, String mawb_number) {
 
         //response.setFiles(getFilePart(uri,context));
+        if (uri == null || uri.isEmpty()) {
+            // Show an alert or handle the case where no picture is uploaded
+            AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+            alertsAndLoaders.showAlert(2, "", "Please upload at least one picture", context, null);
+            return;
+        }
+
+        String spinner1Selection = (binding.cargoImagesLayout.spinner1.getSelectedItem() != null)
+                ? binding.cargoImagesLayout.spinner1.getSelectedItem().toString()
+                : "";
+
+        String spinner2Selection = (binding.cargoImagesLayout.spinner2.getSelectedItem() != null)
+                ? binding.cargoImagesLayout.spinner2.getSelectedItem().toString()
+                : "";
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<Integer> call = services.uploadImage(getFilePart(uri,context), hawb_id, mawb_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
+        Call<Integer> call = services.uploadImage(getFilePart(uri,context), hawb_id, mawb_number, spinner1Selection, spinner2Selection, binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
 
 
         SweetAlertDialog finalDialog = dialog;
@@ -640,6 +654,7 @@ public class ReceiveCargoViewModel {
                 try {
                     finalDialog.cancel();
                     Integer res = response.body();
+
 
                     if (res == 1) {
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
@@ -872,7 +887,7 @@ public class ReceiveCargoViewModel {
                 dialog.cancel();
 
                 try {
-                    uld_types = new ArrayList<>();
+                    containerTypes = new ArrayList<>();
                     if (response.code() == 200) {
                         containerResp = response.body();
                         if (containerResp.getStatusCode() == 200) {
@@ -882,12 +897,13 @@ public class ReceiveCargoViewModel {
                             }
                             activity.getUldContainerTypes(containerTypes);
                         } else {
-//                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                            alertsAndLoaders.showAlert(1, "", containerResp.getMessage(), context, activity.doNothing);
                         }
                     } else {
 //                        DISPLAY ERROR HERE.....
-//                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+                        alertsAndLoaders.showAlert(1, "", containerResp.getMessage(), context, activity.doNothing);
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

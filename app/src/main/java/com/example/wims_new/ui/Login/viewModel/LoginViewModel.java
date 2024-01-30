@@ -1,5 +1,6 @@
 package com.example.wims_new.ui.Login.viewModel;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,10 @@ import com.example.wims_new.ui.Login.Model.UserModel;
 import com.example.wims_new.ui.Login.Model.UserResponse;
 import com.example.wims_new.ui.Login.view.LoginPage;
 import com.example.wims_new.ui.mainMenu.MainMenu;
+import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
+import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
+import com.example.wims_new.ui.storeCargo.releasing.view.RackLocation;
+import com.example.wims_new.ui.storeCargo.storage.view.StorageCargo;
 import com.example.wims_new.utils.SharedPref;
 
 import org.json.JSONException;
@@ -84,7 +89,7 @@ public class LoginViewModel {
         }
     }
 
-    public void getUserLogout(Context context, MainMenu activity) {
+    public void getUserLogout(Context context, Activity activity) {
         resp = new UserResponse();
         SharedPref util = new SharedPref();
 
@@ -107,7 +112,6 @@ public class LoginViewModel {
                                 user = resp.getData();
                                 Intent intent = new Intent(context, LoginPage.class);
                                 activity.startActivity(intent);
-
                             } else {
                                 alertsAndLoaders.showAlert(1, "","", context, null);
                             }
@@ -129,6 +133,5 @@ public class LoginViewModel {
             e.printStackTrace();
         }
     }
-
 
 }

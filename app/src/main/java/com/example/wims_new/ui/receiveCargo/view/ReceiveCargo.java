@@ -38,6 +38,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,6 +47,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.wims_new.LocalDB.LocalDBHelper;
@@ -67,6 +69,7 @@ import com.example.wims_new.model.UldModel;
 import com.example.wims_new.model.UldTypeModel;
 import com.example.wims_new.model.UldTypesModel;
 import com.example.wims_new.model.UploadImageModel;
+import com.example.wims_new.ui.Login.viewModel.LoginViewModel;
 import com.example.wims_new.ui.mainMenu.MainMenu;
 import com.example.wims_new.ui.receiveCargo.adapter.FlightListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.ImageListAdapter;
@@ -128,7 +131,7 @@ public class ReceiveCargo extends AppCompatActivity {
     private static String FOLDER_NAME = "WIMS_IMAGES", select_b64 = "", cargoFname = "";
 
     boolean is_pic1 = false;
-
+    private LoginViewModel loginViewModel;
 
     boolean is_uld = false, is_uploaded = false;
 
@@ -142,7 +145,7 @@ public class ReceiveCargo extends AppCompatActivity {
     String uld_type_txt ="";
     boolean has_hawb =false;
     ListView listView;
-    AutoCompleteTextView uld_type, update_uld_type;
+    Spinner uld_type, update_uld_type;
     String uld_type1 = "", update_uld_type1 = "";
 
     LocalDBHelper db;
@@ -153,6 +156,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
     int uld_id = 0;
     boolean is_uld_image = false;
+    private MainMenu mainMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +201,8 @@ public class ReceiveCargo extends AppCompatActivity {
         viewModel = new ReceiveCargoViewModel();
         toShowLayout();
         viewModel.landedFlights(context, this, binding);
+
+        loginViewModel = new LoginViewModel();
 
         uri = new ArrayList<>();
         fnames = new String[2];
@@ -305,7 +311,8 @@ public class ReceiveCargo extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 layout_id = 2;
-                selectedFlights = flights.get(i);
+//                selectedFlights = flights.get(i);
+                selectedFlights = searchFlights.get(i);
                 toShowLayout();
                 viewModel.populateFlightDetails(binding, selectedFlights);
             }
@@ -366,7 +373,8 @@ public class ReceiveCargo extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 layout_id = 4;
-                selectedUlds = ulds.get(i);
+//                selectedUlds = ulds.get(i);
+                selectedUlds = searchUlds.get(i);
                 binding.mawbListLayout.uldNo.setText(selectedUlds.getUldNumber());
                 binding.mawbListLayout.flightNo.setText(selectedUlds.getFlightNumber());
                 binding.mawbListLayout.uldType.setText(selectedUlds.getType());
@@ -416,7 +424,7 @@ public class ReceiveCargo extends AppCompatActivity {
                 layout_id = 7;
                 binding.cargoImagesLayout.uldNumber.setText(selectedUlds.getUldNumber());
 
-                viewModel.getUldImages(ReceiveCargo.this, ReceiveCargo.this, binding, selectedFlights.getFlightNumber(), selectedUlds.getUldNumber());
+//                viewModel.getUldImages(ReceiveCargo.this, ReceiveCargo.this, binding, selectedFlights.getFlightNumber(), selectedUlds.getUldNumber());
                 viewModel.getCargoConditionList(ReceiveCargo.this, ReceiveCargo.this, binding);
                 toShowLayout();
             }
@@ -573,7 +581,7 @@ public class ReceiveCargo extends AppCompatActivity {
                     AlertsAndLoaders loaders = new AlertsAndLoaders();
                     loaders.showAlert(4,"Are you sure?", "You want to upload this ULD?", ReceiveCargo.this,uploadCargo);
                 } else {
-//                    is_uld = false;
+                    is_uld = false;
                     binding.mawbDetails.uploadCargoImageLayout.setVisibility(View.GONE);
                     binding.mawbDetails.viewCargoImageLayout.setVisibility(View.VISIBLE);
                     binding.mawbDetails.listTitle.setVisibility(View.VISIBLE);
@@ -623,11 +631,18 @@ public class ReceiveCargo extends AppCompatActivity {
         binding.mawbDetails.confirmCargo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new Task_saveImages().execute();
-                AlertsAndLoaders loaders = new AlertsAndLoaders();
-                loaders.showAlert(4,"Are you sure?", "You want to confirm this cargo?", ReceiveCargo.this,saveCargo);
+                if (uri == null || uri.isEmpty()) {
+                    // Show an alert or handle the case where no picture is uploaded
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", "Please upload at least one picture", ReceiveCargo.this, null);
+                    return;
+                } else {
+                    AlertsAndLoaders loaders = new AlertsAndLoaders();
+                    loaders.showAlert(4,"Are you sure?", "You want to confirm this cargo?", ReceiveCargo.this,saveCargo);
+                }
+
                 //viewModel.to_upload(uri, fnames, context, binding);
-        }
+            }
         });
 
         binding.uldLayout.addUld.setOnClickListener(new View.OnClickListener() {
@@ -636,6 +651,7 @@ public class ReceiveCargo extends AppCompatActivity {
                 showAddUldDialog();
                 dialog.setCancelable(false);
                 dialog.setCanceledOnTouchOutside(false);
+                viewModel.getContainerTypes(ReceiveCargo.this, ReceiveCargo.this, binding);
             }
         });
 
@@ -652,6 +668,8 @@ public class ReceiveCargo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showEditUldDialog();
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
             }
         });
 
@@ -859,33 +877,18 @@ public class ReceiveCargo extends AppCompatActivity {
         saveUldNumberModel = new SaveUldNumberModel();
         ulds = new ArrayList<>();
         mawbList = new ArrayList<>();
+
 //        -- SET ULD TYPES IN DROP DOWN
         uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
 //        -- SET LIST OF MAWBS
         viewModel.getMawbList(context,this,binding,"",false,selectedFlights.getFlightNumber(), true);
 
-        uld_type.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                uld_type1 = uld_type.getText().toString().trim();
-            }
-        });
         uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                uld_id = uld_type.getId();
 //                System.out.println("ULD TYPE ID >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + uld_id);
-//                uld_type1 = uld_type.getText().toString().trim();
+                uld_type1 = uld_type.getSelectedItem().toString().trim();
 //                model.setUldTypeId(getUldContainers());
             }
 
@@ -907,7 +910,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
                 if (uld_no.getText().toString() == "" || uld_no.getText().toString().equals("")){
                     alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
-                }else if (uld_type.getText().toString() == "" || uld_type.getText().toString().equals("")){
+                }else if (uld_type.getSelectedItem().toString() == "" || uld_type.getSelectedItem().toString().equals("")){
                     alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
                 }else if (getCheckedMawbList().size() < 0){
                     alertsAndLoaders.showAlert(2,"","Please select MAWB NUMBER",ReceiveCargo.this, null);
@@ -954,38 +957,22 @@ public class ReceiveCargo extends AppCompatActivity {
         save_uld = mview.findViewById(R.id.save_uld);
 
         UldModel model = new UldModel();
-
         updateUldNumberModel = new SaveUldNumberModel();
+        ulds = new ArrayList<>();
 
-        uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
         update_uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
-//        uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getUldTypes(context,this,binding)));
 
-        update_uld_type.setText(selectedUlds.getType());
+
+        update_uld_type.getSelectedItem().toString().contains(selectedUlds.getType());
+//        update_uld_type.setSelection(((ArrayAdapter<String>) update_uld_type.getAdapter()).getPosition(selectedUlds.getType()));
         update_uld_no.setText(selectedUlds.getUldNumber());
 
 
-        update_uld_type.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                update_uld_type1 = update_uld_type.getText().toString().trim();
-            }
-        });
 
         update_uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                update_uld_type1 = update_uld_type.getText().toString().trim();
+                update_uld_type1 = update_uld_type.getSelectedItem().toString().trim();
 //                int uld_id = update_uld_type.getId();
 //                updateUldNumberModel.getUlds().setUldTypeId(uld_id);
             }
@@ -1003,7 +990,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
                 if (update_uld_no.getText().toString() == null || update_uld_no.getText().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
-                }else if (update_uld_type.getText().toString() == null || update_uld_type.getText().toString().equals(null)){
+                }else if (update_uld_type.getSelectedItem().toString().trim() == null || update_uld_type.getSelectedItem().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
                 }else {
                     updateUldNumberModel.getUlds().setUldNumber(update_uld_no.getText().toString().trim());
@@ -1061,6 +1048,7 @@ public class ReceiveCargo extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void perform() {
+
             if(has_hawb){
                 viewModel.insertMawbDetails(ReceiveCargo.this, ReceiveCargo.this, binding, uri, fnames, selectedMawbs.getMawbNumber(), db.getMawbDetails().getFlight_number(), selectedHawbs.getHawbNumber(), selectedHawbs.getId());
             }else{
@@ -1116,14 +1104,14 @@ public class ReceiveCargo extends AppCompatActivity {
         return 0;
     }
 
-    public int getUldTypeId(){
-        for(UldTypesModel m : uldList){
-            if(m.getType().equals(uld_type.getText().toString().trim()) || m.getType().equals(update_uld_type.getText().toString().trim())){
-                return m.getId();
-            }
-        }
-        return 0;
-    }
+//    public int getUldTypeId(){
+//        for(UldTypesModel m : uldList){
+//            if(m.getType().equals(uld_type.getText().toString().trim()) || m.getType().equals(update_uld_type.getText().toString().trim())){
+//                return m.getId();
+//            }
+//        }
+//        return 0;
+//    }
 
     private List<MawbModel> getCheckedMawbList() {
         List<MawbModel> list = new ArrayList<>();
@@ -1200,7 +1188,5 @@ public class ReceiveCargo extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
 
 }

@@ -291,6 +291,7 @@
                     android:layout_height="@dimen/_40sdp"
                     android:background="@drawable/search_bg"
                     android:layout_marginTop="5dp"
+                    android:inputType="number"
                     android:fontFamily="@font/manrope"/>
 
                 <TextView
