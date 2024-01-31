@@ -285,13 +285,14 @@ public class ReceiveCargo extends AppCompatActivity {
         binding.uldLayout.refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (ulds.size() > 0) {
+                if (ulds != null && ulds.size() > 0) {
                     viewModel.uldPerFlight(context, ReceiveCargo.this, binding, selectedFlights.getFlightNumber());
                 } else {
                     AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
                     alertsAndLoaders.showAlert(1, "", "No Data Found", context, null);
-                    binding.uldLayout.refreshLayout.setRefreshing(false);
+
                 }
+                binding.uldLayout.refreshLayout.setRefreshing(false);
             }
         });
 
