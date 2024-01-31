@@ -145,7 +145,8 @@ public class ReceiveCargo extends AppCompatActivity {
     String uld_type_txt ="";
     boolean has_hawb =false;
     ListView listView;
-    Spinner uld_type, update_uld_type;
+    AutoCompleteTextView uld_type, update_uld_type;
+//    Spinner uld_type, update_uld_type;
     String uld_type1 = "", update_uld_type1 = "";
 
     LocalDBHelper db;
@@ -883,13 +884,28 @@ public class ReceiveCargo extends AppCompatActivity {
 //        -- SET LIST OF MAWBS
         viewModel.getMawbList(context,this,binding,"",false,selectedFlights.getFlightNumber(), true);
 
+
+        uld_type.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                uld_type1 = uld_type.getText().toString().trim();
+            }
+        });
         uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                uld_id = uld_type.getId();
-//                System.out.println("ULD TYPE ID >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + uld_id);
-                uld_type1 = uld_type.getSelectedItem().toString().trim();
-//                model.setUldTypeId(getUldContainers());
+//                uld_type1 = uld_type.getSelectedItem().toString().trim();
+//                uld_type1 = uld_type.getText().toString().trim();
             }
 
             @Override
@@ -910,7 +926,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
                 if (uld_no.getText().toString() == "" || uld_no.getText().toString().equals("")){
                     alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
-                }else if (uld_type.getSelectedItem().toString() == "" || uld_type.getSelectedItem().toString().equals("")){
+                }else if (uld_type.getText().toString().trim() == "" || uld_type.getText().toString().equals("")){
                     alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
                 }else if (getCheckedMawbList().size() < 0){
                     alertsAndLoaders.showAlert(2,"","Please select MAWB NUMBER",ReceiveCargo.this, null);
@@ -963,25 +979,37 @@ public class ReceiveCargo extends AppCompatActivity {
         update_uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
 
 
-        update_uld_type.getSelectedItem().toString().contains(selectedUlds.getType());
-//        update_uld_type.setSelection(((ArrayAdapter<String>) update_uld_type.getAdapter()).getPosition(selectedUlds.getType()));
+        update_uld_type.setText(selectedUlds.getType());
         update_uld_no.setText(selectedUlds.getUldNumber());
 
-
-
-        update_uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        update_uld_type.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                update_uld_type1 = update_uld_type.getSelectedItem().toString().trim();
-//                int uld_id = update_uld_type.getId();
-//                updateUldNumberModel.getUlds().setUldTypeId(uld_id);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                update_uld_type1 = update_uld_type.getText().toString().trim();
             }
         });
+
+//        update_uld_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                update_uld_type1 = update_uld_type.getText().toString().trim();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         save_uld.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -990,7 +1018,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
                 if (update_uld_no.getText().toString() == null || update_uld_no.getText().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
-                }else if (update_uld_type.getSelectedItem().toString().trim() == null || update_uld_type.getSelectedItem().toString().equals(null)){
+                }else if (update_uld_type.getText().toString().trim() == null || update_uld_type.getText().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
                 }else {
                     updateUldNumberModel.getUlds().setUldNumber(update_uld_no.getText().toString().trim());
