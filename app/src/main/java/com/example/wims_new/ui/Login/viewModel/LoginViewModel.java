@@ -68,10 +68,10 @@ public class LoginViewModel {
                                 activity.startActivity(intent);
 
                             } else {
-                                alertsAndLoaders.showAlert(1, "","", context, activity.goToMainMenu);
+                                alertsAndLoaders.showAlert(1, "",resp.getMessage(), context, activity.goToMainMenu);
                             }
                         } else {
-                            alertsAndLoaders.showAlert(1, "","", context, activity.goToMainMenu);
+                            alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.goToMainMenu);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

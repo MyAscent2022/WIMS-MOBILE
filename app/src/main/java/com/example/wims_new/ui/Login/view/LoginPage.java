@@ -1,5 +1,6 @@
 package com.example.wims_new.ui.Login.view;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -18,9 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wims_new.MainActivity;
 import com.example.wims_new.R;
+import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityLoginBinding;
 import com.example.wims_new.ui.Login.viewModel.LoginViewModel;
 import com.example.wims_new.ui.mainMenu.MainMenu;
+import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
 import com.example.wims_new.utils.FunctionInterface;
 
 import java.util.Objects;
@@ -73,9 +76,19 @@ public class LoginPage extends AppCompatActivity {
 
     private void eventHandler() {
         binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+            AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
             @Override
             public void onClick(View view) {
-                viewModel.getUserLogin(binding.txtUsername.getText().toString(), binding.txtPassword.getText().toString(), LoginPage.this, LoginPage.this);
+
+                if(binding.txtUsername.getText().toString() == "" || binding.txtUsername.getText().toString().equals("")) {
+                    alertsAndLoaders.showAlert(2, "", "Please enter username", LoginPage.this, null);
+                } else if (binding.txtPassword.getText().toString() == "" || binding.txtPassword.getText().toString().equals("")){
+                    alertsAndLoaders.showAlert(2, "", "Please enter password", LoginPage.this, null);
+                } else {
+                    viewModel.getUserLogin(binding.txtUsername.getText().toString(), binding.txtPassword.getText().toString(), LoginPage.this, LoginPage.this);
+                }
+
+
 //                Intent in = new Intent(LoginPage.this, MainMenu.class);
 //                startActivity(in);
             }
@@ -92,8 +105,13 @@ public class LoginPage extends AppCompatActivity {
         }
     };
 
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
 
-//        binding.btnLogin.setOnClickListener(view -> {
+    //        binding.btnLogin.setOnClickListener(view -> {
 
 //            String validate_message=viewModel.checkNullValues(binding);
 //            if(TextUtils.isEmpty(validate_message)){
