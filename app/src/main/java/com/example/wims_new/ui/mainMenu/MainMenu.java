@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -81,24 +82,9 @@ public class MainMenu extends AppCompatActivity {
         binding.layoutLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog dialog = new AlertDialog.Builder(MainMenu.this)
-                        .setMessage("Are you sure you want to Logout?")
-                        .setPositiveButton("Yes", null)
-                        .setNegativeButton("Cancel", null)
-                        .show();
-                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                positiveButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            viewModel.getUserLogout(MainMenu.this, MainMenu.this);
-//                            Intent in = new Intent(MainMenu.this, LoginPage.class);
-//                            startActivity(in);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
+                if (isValidActivity()) {
+                    showLogoutDialog();
+                }
             }
         });
 
@@ -107,23 +93,32 @@ public class MainMenu extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        AlertDialog dialog= new AlertDialog.Builder(MainMenu.this)
-                .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("Yes",null)
-                .setNegativeButton("Cancel",null)
-                .show();
-        Button positiveButton=dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    Intent in =new Intent(MainMenu.this,LoginPage.class);
-                    startActivity(in);
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
-            }
-        });
+        if (isValidActivity()) {
+            showLogoutDialog();
+        }
+    }
+
+    private boolean isValidActivity() {
+        return !isFinishing() && !isDestroyed();
+    }
+
+    private void showLogoutDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(MainMenu.this)
+                .setMessage("Are you sure you want to Logout?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            viewModel.getUserLogout(MainMenu.this, MainMenu.this);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.show();
     }
 
     public FunctionInterface.Function goToLoginPage = new FunctionInterface.Function() {

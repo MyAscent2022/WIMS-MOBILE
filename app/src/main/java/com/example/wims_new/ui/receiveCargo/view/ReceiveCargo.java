@@ -40,6 +40,7 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -145,7 +146,8 @@ public class ReceiveCargo extends AppCompatActivity {
     String uld_type_txt ="";
     boolean has_hawb =false;
     ListView listView;
-    AutoCompleteTextView uld_type, update_uld_type;
+    AutoCompleteTextView uld_type;
+    AutoCompleteTextView update_uld_type;
 //    Spinner uld_type, update_uld_type;
     String uld_type1 = "", update_uld_type1 = "";
 
@@ -445,21 +447,6 @@ public class ReceiveCargo extends AppCompatActivity {
             }
         });
 
-        binding.uldImagesLayout.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layout_id = 4;
-                toShowLayout();
-            }
-        });
-
-        binding.uldImagesLayout.uploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertsAndLoaders loaders = new AlertsAndLoaders();
-                loaders.showAlert(4,"Are you sure?", "You want to upload this ULD?", ReceiveCargo.this,uploadCargo);
-            }
-        });
 
         binding.mawbDetails.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -513,18 +500,9 @@ public class ReceiveCargo extends AppCompatActivity {
             }
         });
 
-        binding.uldImagesLayout.picture1.setOnClickListener(new View.OnClickListener() {
+        binding.uldImagesLayout.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                is_pic1 = true;
-                askCameraPermission();
-            }
-        });
-
-        binding.uldImagesLayout.picture2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                is_pic1 = false;
                 askCameraPermission();
             }
         });
@@ -663,6 +641,8 @@ public class ReceiveCargo extends AppCompatActivity {
                 showEditUldDialog();
                 dialog.setCancelable(false);
                 dialog.setCanceledOnTouchOutside(false);
+                viewModel.getContainerTypes(ReceiveCargo.this, ReceiveCargo.this, binding);
+
             }
         });
 
@@ -672,6 +652,7 @@ public class ReceiveCargo extends AppCompatActivity {
                 showEditUldDialog();
                 dialog.setCancelable(false);
                 dialog.setCanceledOnTouchOutside(false);
+                viewModel.getContainerTypes(ReceiveCargo.this, ReceiveCargo.this, binding);
             }
         });
 
@@ -882,6 +863,7 @@ public class ReceiveCargo extends AppCompatActivity {
 
 //        -- SET ULD TYPES IN DROP DOWN
         uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
+        uld_type.setThreshold(1);
 //        -- SET LIST OF MAWBS
         viewModel.getMawbList(context,this,binding,"",false,selectedFlights.getFlightNumber(), true);
 
@@ -977,11 +959,13 @@ public class ReceiveCargo extends AppCompatActivity {
         updateUldNumberModel = new SaveUldNumberModel();
         ulds = new ArrayList<>();
 
-        update_uld_type.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
-
 
         update_uld_type.setText(selectedUlds.getType());
         update_uld_no.setText(selectedUlds.getUldNumber());
+
+        update_uld_type.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, viewModel.getContainerTypes(context,this,binding)));
+        update_uld_type.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        update_uld_type.setThreshold(1);
 
         update_uld_type.addTextChangedListener(new TextWatcher() {
             @Override
