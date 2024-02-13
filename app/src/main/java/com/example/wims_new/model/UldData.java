@@ -7,6 +7,7 @@ public class UldData {
     List<UldTypesModel> types;
 
     List<UldModel> uldList;
+    List<UldModel> uldList1;
 
     public List<UldModel> getUldList() {
         return uldList;
@@ -30,5 +31,13 @@ public class UldData {
 
     public void setUlds(List<UldModel> ulds) {
         this.ulds = ulds;
+    }
+
+    public List<UldModel> getUldList1() {
+        return uldList1;
+    }
+
+    public void setUldList1(List<UldModel> uldList1) {
+        this.uldList1 = uldList1;
     }
 }

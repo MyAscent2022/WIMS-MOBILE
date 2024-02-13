@@ -7,6 +7,7 @@ public class UserModel implements Serializable {
     String email;
     String passkey;
     String username;
+    int roleId;
 
     public int getId() {
         return id;
@@ -38,5 +39,13 @@ public class UserModel implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

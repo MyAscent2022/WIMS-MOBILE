@@ -16,10 +16,10 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="227dp"
+                android:layout_width="@dimen/_130sdp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/_20sdp"
                 android:layout_marginTop="10dp">
 
                 <TextView
@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:text="MAWB NO."
                     android:fontFamily="@font/manrope"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/_10ssp"
                     android:textColor="#263238"/>
 
                 <TextView
@@ -37,16 +37,16 @@
                     android:text="0000000"
                     android:fontFamily="@font/manrope"
                     android:textColor="#263238"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="130dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginTop="10dp">
 
                 <TextView
@@ -55,17 +55,18 @@
                     android:text="NO. OF HAWB/S"
                     android:gravity="right"
                     android:fontFamily="@font/manrope"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/_10ssp"
                     android:textColor="#263238"/>
 
                 <TextView
+                    android:id="@+id/hawb_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0000000"
+                    android:text="0"
                     android:gravity="right"
                     android:fontFamily="@font/manrope"
                     android:textColor="#263238"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold"/>
 
             </LinearLayout>

@@ -4,13 +4,13 @@ import java.util.List;
 
 public class ImagesData {
 
-    List<ImagesModel> images;
+    List<CargoImagesModel> images;
 
-    public List<ImagesModel> getImages() {
+    public List<CargoImagesModel> getImages() {
         return images;
     }
 
-    public void setImages(List<ImagesModel> images) {
+    public void setImages(List<CargoImagesModel> images) {
         this.images = images;
     }
 }

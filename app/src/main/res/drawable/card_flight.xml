@@ -18,7 +18,7 @@
         <path
             android:pathData="M380,0H20C15.4768,0,10,4.47715,10,10V155C10,160.523,15.4768,165,20,165H380C385.523,165,390,160.523,390,155V10C390,4.47715,385.523,0,380,0Z"
             android:strokeWidth="2"
-            android:fillColor="@color/light_grey"
+            android:fillColor="#FFFFFF"
             />
     </group>
 </vector>

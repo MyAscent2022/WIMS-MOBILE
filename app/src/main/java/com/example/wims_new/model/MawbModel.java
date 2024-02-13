@@ -68,8 +68,17 @@ public class MawbModel implements Serializable {
     String registrationDate;
     String registrationNumber;
     String cargoStatus;
+    int hawbCount;
 
     boolean selected;
+
+    public int getHawbCount() {
+        return hawbCount;
+    }
+
+    public void setHawbCount(int hawbCount) {
+        this.hawbCount = hawbCount;
+    }
 
     public boolean isSelected() {
         return selected;

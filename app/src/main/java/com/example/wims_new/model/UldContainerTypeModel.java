@@ -2,7 +2,7 @@ package com.example.wims_new.model;
 
 import java.io.Serializable;
 
-public class UldTypeModel implements Serializable {
+public class UldContainerTypeModel implements Serializable {
     int id;
     String type;
 

@@ -18,6 +18,7 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 public class UldListAdapter extends ArrayAdapter<UldModel> {
+    private List<UldModel> ulds;
 
     private Context mContext;
     int mResource;
@@ -31,12 +32,9 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
-            String uld_no = getItem(position).getUldNo();
-            String uld_type = getItem(position).getUldType();
-            int tc = getItem(position).getTotalCount();
-            int sl = getItem(position).getShortLanded();
-            int te = getItem(position).getTotalWeight();
-//            String uld_type = getItem(position).getUldTypeModel().getType();
+            String uld_no = getItem(position).getUldNumber();
+            String uld_type = getItem(position).getType();
+            int te = getItem(position).getTotalExpected();
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
@@ -47,8 +45,6 @@ public class UldListAdapter extends ArrayAdapter<UldModel> {
 
             uld_no_txt.setText(uld_no);
             uld_type_txt.setText(uld_type);
-//            tc_txt.setText(tc);
-//            sl_txt.setText(sl);
             te_txt.setText(String.valueOf(te));
 
         } catch (Exception e) {

@@ -223,6 +223,8 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/enter_btn"
                     android:gravity="center"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:orientation="horizontal">
 
                     <TextView

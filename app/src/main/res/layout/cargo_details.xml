@@ -84,6 +84,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="MAWB NO"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:textColor="#0038A8"
                         android:textStyle="bold"
                         android:textSize="16sp"
@@ -113,6 +114,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="HAWB NO"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:textColor="#0038A8"
                         android:textStyle="bold"
                         android:textSize="16sp"
@@ -149,6 +151,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="TOTAL WEIGHT"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:inputType="number"
                         android:textColor="#000000"
                         android:textStyle="bold"
@@ -179,6 +182,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="CARGO CLASS"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="16sp"
@@ -215,6 +219,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="PERSONNEL"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="16sp"
@@ -244,6 +249,7 @@
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="-9sp"
                         android:text="RECEIVE PCS"
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="16sp"
@@ -265,8 +271,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="290dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:padding="@dimen/_5sdp"
                 android:layout_marginTop="20dp">
 
@@ -281,9 +288,10 @@
                 <EditText
                     android:id="@+id/stored_item_pcs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_40sdp"
                     android:background="@drawable/search_bg"
                     android:layout_marginTop="5dp"
+                    android:inputType="number"
                     android:fontFamily="@font/manrope"/>
 
                 <TextView
@@ -298,7 +306,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:hint="Select Rack Name"
                     android:textColorHint="@color/placeholder"
                     app:errorEnabled="true"
@@ -308,7 +316,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/rack_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_40sdp"
                         android:inputType="textCapWords"
                         android:maxLength="100"
                         android:textColor="@color/black" />
@@ -325,9 +333,10 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:hint="Select Layer Name"
                     android:textColorHint="@color/placeholder"
+
                     app:errorEnabled="true"
                     app:hintTextColor="@color/placeholder"
                     app:placeholderTextColor="@color/placeholder">
@@ -335,7 +344,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/layer_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_40sdp"
                         android:inputType="textCapWords"
                         android:maxLength="100"
                         android:textColor="@color/black" />

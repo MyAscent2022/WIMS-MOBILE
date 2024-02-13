@@ -82,6 +82,52 @@ public class RackLocationViewModel {
 
     }
 
+    public void saveReleasingCargo(RackLocation activity, ActivityRackLocationBinding binding, Context context,RackLocationViewModel viewModel, String mawb_number, String hawb_number, String flight_number, int user_id){
+        resp = new ReleaseCargoResponse();
+        dialog = new SweetAlertDialog(context);
+        SharedPref util = new SharedPref();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog= alertsAndLoaders.showAlert(3, "", "", context, null);
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<ReleaseCargoResponse> call = services.saveReleaseCargo(mawb_number, hawb_number, flight_number, Integer.valueOf(util.readPrefString(context, util.USER_ID)));
+        call.enqueue(new Callback<ReleaseCargoResponse>() {
+
+
+            @Override
+            public void onResponse(Call<ReleaseCargoResponse> call, retrofit2.Response<ReleaseCargoResponse> response) {
+                dialog.cancel();
+
+                try {
+                    releasingCargo = new ArrayList<>();
+                    resp = response.body();
+                    if(resp.isStatus()){
+                        if (resp.getStatusCode() == 200) {
+                            AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                            alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMain);
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
+                        }
+                        activity.getReleaseCargoData(releasingCargo);
+                    }else{
+                        alertsAndLoaders.showAlert(6, "", "No data found", context, activity.backToMenu);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReleaseCargoResponse> call, Throwable t) {
+                dialog.cancel();
+                Log.e("Error:", t.getMessage());
+            }
+        });
+
+    }
+
     public void updateStoragerStatus(Context context, ActivityRackLocationBinding binding, RackLocation activity, String hawbNumber, String mawbNumber) {
         SharedPref util = new SharedPref();
         AlertsAndLoaders alert = new AlertsAndLoaders();

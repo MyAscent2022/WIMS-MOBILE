@@ -52,14 +52,14 @@
                 android:id="@+id/cargo_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope"
-                android:textStyle="bold"
                 android:layout_marginLeft="@dimen/_10sdp"
-                android:textColor="@color/blue"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textSize="@dimen/medium_txt"
+                android:fontFamily="@font/manrope"
                 android:text="CARGO IMAGES"
-                android:visibility="visible"/>
+                android:textColor="@color/blue"
+                android:textSize="@dimen/medium_txt"
+                android:textStyle="bold"
+                android:visibility="visible" />
 
         </LinearLayout>
 
@@ -110,7 +110,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:visibility="gone">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/retake_image1"
@@ -196,7 +197,7 @@
 
                 <EditText
                     android:id="@+id/remarks"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/_170sdp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/search_bg"
                     android:layout_marginTop="5dp"
@@ -209,7 +210,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_130sdp"
             android:layout_margin="@dimen/_10sdp"
             android:orientation="horizontal"
             android:background="@drawable/image_bg">
@@ -253,7 +254,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:visibility="gone">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/retake_image2"
@@ -339,7 +341,7 @@
 
                 <EditText
                     android:id="@+id/remarks2"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/_170sdp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/search_bg"
                     android:layout_marginTop="5dp"
@@ -355,6 +357,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_10sdp"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:background="@drawable/image_add">
 
             <ImageButton

@@ -4,8 +4,10 @@ import java.util.List;
 
 public class SaveUldNumberModel {
     UldModel ulds;
-    String uld_number;
+    String uldNumber;
     String[] mawbs;
+    String flightNumber;
+    String uldType;
 
 
 
@@ -17,12 +19,12 @@ public class SaveUldNumberModel {
         this.ulds = ulds;
     }
 
-    public String getUld_number() {
-        return uld_number;
+    public String getUldNumber() {
+        return uldNumber;
     }
 
-    public void setUld_number(String uld_number) {
-        this.uld_number = uld_number;
+    public void setUldNumber(String uldNumber) {
+        this.uldNumber = uldNumber;
     }
 
     public String[] getMawbs() {
@@ -31,5 +33,21 @@ public class SaveUldNumberModel {
 
     public void setMawbs(String[] mawbs) {
         this.mawbs = mawbs;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public String getUldType() {
+        return uldType;
+    }
+
+    public void setUldType(String uldType) {
+        this.uldType = uldType;
     }
 }

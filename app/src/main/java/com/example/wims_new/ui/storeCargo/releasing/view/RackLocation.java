@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.wims_new.R;
 import com.example.wims_new.databinding.ActivityRackLocationBinding;
@@ -26,6 +27,7 @@ public class RackLocation extends AppCompatActivity {
     ActivityRackLocationBinding binding;
     RackLocationViewModel viewModel;
     List<ReleaseCargoModel> releasingCargo;
+    private int layout_id = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,20 @@ public class RackLocation extends AppCompatActivity {
         viewModel = new RackLocationViewModel();
         viewModel.getCargoForReleasing(RackLocation.this,binding, this, viewModel);
 
+        eventHandler();
+
     }
 
     private void eventHandler(){
+
+        binding.headerLayout.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(RackLocation.this, StoreCargoMenu.class);
+                startActivity(in);
+            }
+        });
+
 
 
 
@@ -81,6 +94,16 @@ public class RackLocation extends AppCompatActivity {
             startActivity(in);
         }
 
+    };
+
+    public FunctionInterface.Function backToMain = new FunctionInterface.Function() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void perform() {
+//            Bundle bundle = new Bundle();
+            Intent in = new Intent(RackLocation.this, MainMenu.class);
+            startActivity(in);
+        }
     };
 
 }

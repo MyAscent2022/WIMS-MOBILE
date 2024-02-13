@@ -1,5 +1,6 @@
 package com.example.wims_new.ui.Login.viewModel;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,10 @@ import com.example.wims_new.ui.Login.Model.UserModel;
 import com.example.wims_new.ui.Login.Model.UserResponse;
 import com.example.wims_new.ui.Login.view.LoginPage;
 import com.example.wims_new.ui.mainMenu.MainMenu;
+import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
+import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
+import com.example.wims_new.ui.storeCargo.releasing.view.RackLocation;
+import com.example.wims_new.ui.storeCargo.storage.view.StorageCargo;
 import com.example.wims_new.utils.SharedPref;
 
 import org.json.JSONException;
@@ -56,14 +61,17 @@ public class LoginViewModel {
                             if (resp.getStatusCode() == 200) {
                                 user = resp.getData();
                                 SharedPref sharedPref = new SharedPref();
+
                                 sharedPref.writePrefString(context, sharedPref.USER_ID, String.valueOf(user.getId()));
                                 Intent intent = new Intent(context, MainMenu.class);
+                                intent.putExtra("role_id", user.getRoleId());
                                 activity.startActivity(intent);
+
                             } else {
-                                alertsAndLoaders.showAlert(1, "","", context, activity.goToMainMenu);
+                                alertsAndLoaders.showAlert(1, "",resp.getMessage(), context, activity.goToMainMenu);
                             }
                         } else {
-                            alertsAndLoaders.showAlert(1, "","", context, activity.goToMainMenu);
+                            alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.goToMainMenu);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -81,8 +89,49 @@ public class LoginViewModel {
         }
     }
 
+    public void getUserLogout(Context context, Activity activity) {
+        resp = new UserResponse();
+        SharedPref util = new SharedPref();
 
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog = alertsAndLoaders.showAlert(3, "Logged out. . .", "", context, null);
 
+        try {
+            ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+            Call<UserResponse> call = services.logoutUser(Integer.parseInt(util.readPrefString(context, util.USER_ID)));
 
+            call.enqueue(new Callback<UserResponse>() {
+                @Override
+                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                    dialog.cancel();
+
+                    try {
+                        if (response.code() == 200) {
+                            resp = response.body();
+                            if (resp.getStatusCode() == 200) {
+                                user = resp.getData();
+                                Intent intent = new Intent(context, LoginPage.class);
+                                activity.startActivity(intent);
+                            } else {
+                                alertsAndLoaders.showAlert(1, "","", context, null);
+                            }
+                        } else {
+                            alertsAndLoaders.showAlert(1, "","", context, null);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserResponse> call, Throwable t) {
+                    Log.e("Error: ", t.getMessage());
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

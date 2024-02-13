@@ -19,7 +19,7 @@
     <include
         android:id="@+id/mawb_list"
         layout="@layout/mawb_storage"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <include
         android:id="@+id/mawb_gallery"
@@ -27,8 +27,18 @@
         android:visibility="gone"/>
 
     <include
+        android:id="@+id/cargo_images_layout"
+        layout="@layout/cargo_images_layout"
+        android:visibility="gone" />
+
+    <include
         android:id="@+id/cargo_details"
         layout="@layout/cargo_details"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/cargo_image_list_layout"
+        layout="@layout/cargo_image_list_layout"
         android:visibility="gone"/>
 
 

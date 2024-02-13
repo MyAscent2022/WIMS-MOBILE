@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.wims_new.BuildConfig;
 import com.example.wims_new.LocalDB.LocalDBHelper;
@@ -25,6 +27,7 @@ import com.example.wims_new.apiCall.ApiCall;
 import com.example.wims_new.apiCall.ServiceGenerator;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityReceiveCargoBinding;
+import com.example.wims_new.databinding.ActivityStorageCargoBinding;
 import com.example.wims_new.model.CargoActLogsModel;
 import com.example.wims_new.model.CargoCategoryModel;
 import com.example.wims_new.model.CargoClassModel;
@@ -40,14 +43,22 @@ import com.example.wims_new.model.MawbModel;
 import com.example.wims_new.model.MawbResponse;
 import com.example.wims_new.model.ResBody;
 import com.example.wims_new.model.SaveUldNumberModel;
+import com.example.wims_new.model.UldContainerResponse;
+import com.example.wims_new.model.UldContainerTypeModel;
+import com.example.wims_new.model.UldImages;
+import com.example.wims_new.model.UldImagesResp;
+import com.example.wims_new.model.UldImagesResponse;
 import com.example.wims_new.model.UldModel;
 import com.example.wims_new.model.UldResponse;
+import com.example.wims_new.model.UldTypeModel;
 import com.example.wims_new.model.UldTypesModel;
 import com.example.wims_new.ui.receiveCargo.adapter.FlightListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.HawbListAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.MawbListAdapter;
+import com.example.wims_new.ui.receiveCargo.adapter.UldImagesAdapter;
 import com.example.wims_new.ui.receiveCargo.adapter.UldListAdapter;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
+import com.example.wims_new.ui.storeCargo.storage.view.StorageCargo;
 import com.example.wims_new.utils.RotateImage;
 import com.example.wims_new.utils.SharedPref;
 import com.google.gson.Gson;
@@ -78,10 +89,11 @@ public class ReceiveCargoViewModel {
 
     private SweetAlertDialog dialog;
     private FlightsResponse resp;
-    private List<FlightsModel> flights;
+    private List<FlightsModel> flights, searchFlights;
     private UldResponse uldResp;
-    private List<UldModel> ulds;
+    private List<UldModel> ulds, searchUlds;
     private MawbResponse mawbResp;
+    private UldContainerResponse containerResp;
     private SaveUldNumberModel saveUldNumberModel;
     private List<MawbModel> mawbs;
     private List<HawbModel> hawbs;
@@ -90,13 +102,17 @@ public class ReceiveCargoViewModel {
     private List<CargoStatusModel> status;
     private List<CargoConditionModel> condition;
     private List<UldTypesModel> uld_types;
+    private List<UldContainerTypeModel> containerTypes;
     private List<UldTypesModel> uld_id;
+    private MutableLiveData<List<UldModel>> uldLiveData = new MutableLiveData<>();
     LocalDBHelper db;
     String flight_no = "";
     String registry_no = "";
     String uld_no = "";
     int user_id = 0;
     String[] hawb_count_ar;
+    List<UldImages> images;
+    UldImagesResp uiResp;
 
     public void landedFlights(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
         resp = new FlightsResponse();
@@ -116,14 +132,18 @@ public class ReceiveCargoViewModel {
 
                 try {
                     flights = new ArrayList<>();
+                    searchFlights = new ArrayList<>();
                     resp = response.body();
                     if (response.code() == 200) {
                         flights = resp.getData().getFlights();
+                        searchFlights = flights;
                         viewData(activity, binding);
+                        binding.flightListLayout.refreshLayout.setRefreshing(false);
                     } else {
 //                        alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
                     }
                     activity.getFlights(flights);
+                    activity.getSearchFlights(searchFlights);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -155,17 +175,20 @@ public class ReceiveCargoViewModel {
                     if (response.code() == 200) {
                         uldResp = response.body();
                         if (resp.getStatusCode() == 200) {
-                            ulds = uldResp.getData().getUldList();
-
+                            ulds = uldResp.getData().getUldList1();
+                            searchUlds = ulds;
                             binding.uldLayout.noOfUld.setText(ulds.size() + "");
                             viewData2(activity, binding);
+                            uldLiveData.setValue(ulds);
                         } else {
                             alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                         }
+                        binding.uldLayout.refreshLayout.setRefreshing(false);
                     } else {
                         alertsAndLoaders.showAlert(1, "", uldResp.getMessage(), context, activity.doNothing);
                     }
                     activity.getUlds(ulds);
+                    activity.getSearchUlds(searchUlds);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -203,7 +226,6 @@ public class ReceiveCargoViewModel {
 //                                    getHawb(context,activity,binding, mawbs.get(i).getMawbNumber());
 //
 //                                }
-
                                 activity.getMawb(mawbs);
                             } else {
                                 mawbs = mawbResp.getData().getMawbs();
@@ -292,6 +314,7 @@ public class ReceiveCargoViewModel {
         binding.mawbListLayout.getRoot().setVisibility(View.GONE);
         binding.hawbListLayout.getRoot().setVisibility(View.GONE);
         binding.mawbDetails.getRoot().setVisibility(View.GONE);
+        binding.uldImagesLayout.getRoot().setVisibility(View.GONE);
         binding.cargoImagesLayout.getRoot().setVisibility(View.GONE);
         binding.headerLayout.getRoot().setVisibility(View.VISIBLE);
         System.out.println("LAYOUT ID >>>>>>>>>>>>>>>>>>>>>>" +  layout_id);
@@ -337,10 +360,12 @@ public class ReceiveCargoViewModel {
             binding.cargoImagesLayout.getRoot().setVisibility(View.VISIBLE);
         } else if (layout_id == 9) {
             binding.cargoImageListLayout.getRoot().setVisibility(View.VISIBLE);
+        } else if (layout_id == 10) {
+            binding.uldImagesLayout.getRoot().setVisibility(View.VISIBLE);
         }
     }
 
-    private void viewData(Activity activity, ActivityReceiveCargoBinding binding) {
+    public void viewData(Activity activity, ActivityReceiveCargoBinding binding) {
         try {
             FlightListAdapter adapter = new FlightListAdapter(activity, R.layout.card_flight_line, flights);
             binding.flightListLayout.listView.setAdapter(adapter);
@@ -420,6 +445,8 @@ public class ReceiveCargoViewModel {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
                             condition = mawbResp.getCondition();
+//                            binding.uldImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+//                            binding.uldImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
 
                             binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
                             binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
@@ -451,38 +478,49 @@ public class ReceiveCargoViewModel {
         return ar;
     }
 
-    public void insertMawbDetails(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, List<Uri> uri, String[] fname, String mawb_number, String flight_number, String hawb_number) {
+    private int cargoCategory(List<CargoCategoryModel> category, String selectedCategory) {
+        for (CargoCategoryModel c : category) {
+            if (selectedCategory.equals(c.getDescription())) {
+                return c.getId();
+            }
+        }
+        return 0;
+    }
+
+    private int cargoCondi(List<CargoConditionModel> condition, String selectedCondition) {
+        for (CargoConditionModel c : condition) {
+            if (selectedCondition.equals(c.getCondition())) {
+                return c.getId();
+            }
+        }
+        return 0;
+    }
+
+    public void insertMawbDetails(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, List<Uri> uri, String[] fname, String mawb_number, String flight_number, String hawb_number, int hawb_id) {
         ConfirmCargoModel response = new ConfirmCargoModel();
         MawbDetails mawbDetails = new MawbDetails();
         SharedPref util = new SharedPref();
         db = new LocalDBHelper(context);
-//      -- SAVE INTO ACCEPTANCE
 
         mawbDetails = db.getMawbDetails();
         System.out.println("ACTUAL PCS >>>>>>>>>>>>>> " + mawbDetails.getActualPcs());
 
+//        mawbDetails.setCargoCategory(binding.mawbDetails.cargoCategory.getText().toString());
+//        System.out.println("setCargoCategoryId " + binding.mawbDetails.cargoCategory.getText().toString());
+//
+//        mawbDetails.setCargoClass(binding.mawbDetails.cargoClass.getText().toString());
+//        System.out.println("setCargoClassId " + binding.mawbDetails.cargoClass.getText().toString());
 
-
-        mawbDetails.setCargoCategoryId(1);
-        mawbDetails.setCargoClassId(1);
-        mawbDetails.setCargoStatusId(1);
+        mawbDetails.setCargoStatus(binding.mawbDetails.cargoStatus.getEditableText().toString());
         mawbDetails.setUserId(Integer.valueOf(util.readPrefString(context, util.USER_ID)));
 
         response.setMawbDetails(mawbDetails);
         //response.setFiles(getFilePart(uri,context));
 
-
-//        -- SAVE STORAGE LOGS
-//        response.getStorageLogs().setUserId(String.valueOf(util.readPrefString(context, util.USER_ID)));
-//        response.getStorageLogs().setRegistryNumber(registry_no);
-//        response.getStorageLogs().setFlightNumber(db.getMawbDetails().getFlight_number());
-//        response.getStorageLogs().setStoragerStatus(); -- GET STORAGER STATUS
-
-
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
         dialog = alertsAndLoaders.showAlert(3, "Loading. . .", "", context, null);
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<MawbResponse> call = services.saveMawbDetails(response, mawb_number,flight_number, hawb_number, Integer.valueOf(util.readPrefString(context, util.USER_ID)));
+        Call<MawbResponse> call = services.saveMawbDetails(response, mawb_number,flight_number, hawb_number, Integer.valueOf(util.readPrefString(context, util.USER_ID)), binding.mawbDetails.cargoCategory.getText().toString(), binding.mawbDetails.cargoClass.getText().toString());
         call.enqueue(new Callback<MawbResponse>() {
             @Override
             public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
@@ -494,13 +532,11 @@ public class ReceiveCargoViewModel {
 
                     if (res.getStatusCode() == 200) {
 
-                        uploadImage( context,  activity,  uri, dialog);
+                        uploadImage(context, activity, binding, uri, dialog, hawb_id, mawb_number);
 
-//                        to_upload(uri,fname,context, binding);
                     } else {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                        alertsAndLoaders.showAlert(2, "", res.getMessage(), context, null);
                     }
 
                 } catch (Exception e) {
@@ -513,6 +549,67 @@ public class ReceiveCargoViewModel {
             @Override
             public void onFailure(Call<MawbResponse> call, Throwable t) {
                 Log.e("Error:", t.getMessage());
+                System.out.println("Check your connection");
+                Log.e("Error:", t.getMessage());
+                dialog.cancel();
+
+                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                alertsAndLoaders.showAlert(2, "", t.getMessage(), context, null);
+            }
+        });
+
+    }
+
+    public void saveUldImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, String flight_number, String uld_number) {
+
+        //response.setFiles(getFilePart(uri,context));
+
+
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+
+        Call<UldImagesResponse> call = services.saveUldImage(getFilePart(uri,context), binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), flight_number, uld_number, binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
+
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+        dialog = alertsAndLoaders.showAlert(3, "Loading. . .", "", context, null);
+
+        call.enqueue(new Callback<UldImagesResponse>() {
+            @Override
+            public void onResponse(Call<UldImagesResponse> call, Response<UldImagesResponse> response) {
+
+                try {
+                    dialog.cancel();
+                    UldImagesResponse res = new UldImagesResponse();
+                    res = response.body();
+
+                    if (res.getStatusCode() == 200) {
+                        activity.setUriToNull();
+                        binding.cargoImagesLayout.picture1.setImageResource(R.drawable.camera);
+                        binding.cargoImagesLayout.picture2.setImageResource(R.drawable.camera);
+                        binding.cargoImagesLayout.spinner1.setSelection(0);
+                        binding.cargoImagesLayout.spinner2.setSelection(0);
+                        binding.cargoImagesLayout.remarks.setText("");
+                        binding.cargoImagesLayout.remarks2.setText("");
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
+//                        to_upload(uri,fname,context, binding);
+                    } else {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                        alertsAndLoaders.showAlert(2, "", "Error", context, null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+                    alertsAndLoaders.showAlert(2, "", e.getMessage(), context, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldImagesResponse> call, Throwable t) {
+                Log.e("Error:", t.getMessage());
 
                 System.out.println("Check your connection");
                 Log.e("Error:", t.getMessage());
@@ -524,14 +621,31 @@ public class ReceiveCargoViewModel {
     }
 
 
-    public void uploadImage(Context context, ReceiveCargo activity,  List<Uri> uri,SweetAlertDialog dialog) {
+
+
+
+    public void uploadImage(Context context, ReceiveCargo activity,  ActivityReceiveCargoBinding binding, List<Uri> uri, SweetAlertDialog dialog, int hawb_id, String mawb_number) {
 
         //response.setFiles(getFilePart(uri,context));
+        if (uri == null || uri.isEmpty()) {
+            // Show an alert or handle the case where no picture is uploaded
+            AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+            alertsAndLoaders.showAlert(2, "", "Please upload at least one picture", context, null);
+            return;
+        }
 
+        String spinner1Selection = (binding.cargoImagesLayout.spinner1.getSelectedItem() != null)
+                ? binding.cargoImagesLayout.spinner1.getSelectedItem().toString()
+                : "";
 
+        String spinner2Selection = (binding.cargoImagesLayout.spinner2.getSelectedItem() != null)
+                ? binding.cargoImagesLayout.spinner2.getSelectedItem().toString()
+                : "";
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<Integer> call = services.uploadImage(getFilePart(uri,context));
+        Call<Integer> call = services.uploadImage(getFilePart(uri,context), hawb_id, mawb_number, spinner1Selection, spinner2Selection, binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
+
+
         SweetAlertDialog finalDialog = dialog;
         call.enqueue(new Callback<Integer>() {
             @Override
@@ -541,14 +655,15 @@ public class ReceiveCargoViewModel {
                     finalDialog.cancel();
                     Integer res = response.body();
 
+
                     if (res == 1) {
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMenu);
+                        alertsAndLoaders.showAlert(0, "Success!", "Success", context, activity.backToMain);
 //                        to_upload(uri,fname,context, binding);
                     } else {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
                         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                        alertsAndLoaders.showAlert(2, "", "Error", context, null);
                     }
 
                 } catch (Exception e) {
@@ -600,9 +715,9 @@ public class ReceiveCargoViewModel {
                     .addFormDataPart("length", String.valueOf(db.getMawbDetails().getLength()))
                     .addFormDataPart("width", String.valueOf(db.getMawbDetails().getWidth()))
                     .addFormDataPart("height", String.valueOf(db.getMawbDetails().getHeight()))
-                    .addFormDataPart("cargo_category", String.valueOf(1))
-                    .addFormDataPart("cargo_class", String.valueOf(2))
-                    .addFormDataPart("cargo_status", String.valueOf(3));
+                    .addFormDataPart("cargo_category", String.valueOf(binding.mawbDetails.cargoCategory.getEditableText().toString()))
+                    .addFormDataPart("cargo_class", String.valueOf(binding.mawbDetails.cargoClass.getEditableText().toString()))
+                    .addFormDataPart("cargo_status", String.valueOf(binding.mawbDetails.cargoStatus.getEditableText().toString()));
 
             String[] ext = context.getContentResolver().getType(uri.get(0)).split("/");
             File f1=compressFile(uri.get(0),  context);
@@ -756,6 +871,51 @@ public class ReceiveCargoViewModel {
         });
 
         return uld_arr;
+    }
+
+    public ArrayList<String> getContainerTypes(Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding) {
+        containerResp = new UldContainerResponse();
+        ArrayList<String> container_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<UldContainerResponse> call = services.getContainerTypes();
+        call.enqueue(new Callback<UldContainerResponse>() {
+            @Override
+            public void onResponse(Call<UldContainerResponse> call, Response<UldContainerResponse> response) {
+                dialog.cancel();
+
+                try {
+                    containerTypes = new ArrayList<>();
+                    if (response.code() == 200) {
+                        containerResp = response.body();
+                        if (containerResp.getStatusCode() == 200) {
+                            containerTypes = containerResp.getData().getContainers();
+                            for (int i = 0; i < containerTypes.size(); i++) {
+                                container_arr.add(containerTypes.get(i).getType());
+                            }
+                            activity.getUldContainerTypes(containerTypes);
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", containerResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+//                        DISPLAY ERROR HERE.....
+                        alertsAndLoaders.showAlert(1, "", containerResp.getMessage(), context, activity.doNothing);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldContainerResponse> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+
+        return container_arr;
     }
 
 
@@ -979,6 +1139,52 @@ public class ReceiveCargoViewModel {
             }
         });
 
+    }
+
+    public void getUldImages (Context context, ReceiveCargo activity, ActivityReceiveCargoBinding binding, String flight_number, String uld_number) {
+        uiResp = new UldImagesResp();
+        ArrayList<String> img_arr = new ArrayList<String>();
+
+        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+
+        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+        Call<UldImagesResp> call = services.getUldImages(flight_number, uld_number);
+        call.enqueue(new Callback<UldImagesResp>() {
+            @Override
+            public void onResponse(Call<UldImagesResp> call, Response<UldImagesResp> response) {
+                try {
+                    images = new ArrayList<>();
+                    String[] arr;
+                    if (response.code() == 200) {
+                        uiResp = response.body();
+                        if (uiResp.getStatusCode() == 200) {
+                            images = uiResp.getData().getImages();
+                            viewUldImg(context, binding);
+                        } else {
+                            alertsAndLoaders.showAlert(1, "", uiResp.getMessage(), context, activity.doNothing);
+                        }
+                    } else {
+                        alertsAndLoaders.showAlert(1, "", uiResp.getMessage(), context, activity.doNothing);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UldImagesResp> call, Throwable t) {
+                Log.e("Error: ", t.getMessage());
+            }
+        });
+    }
+
+    private void viewUldImg(Context context, ActivityReceiveCargoBinding binding) {
+        try {
+            UldImagesAdapter adapter1 = new UldImagesAdapter(context, R.layout.store_cargo_images_line, images);
+//            binding.uldImagesLayout.listView.setAdapter(adapter1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

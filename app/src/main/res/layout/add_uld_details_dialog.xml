@@ -52,7 +52,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/FormField"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_60sdp"
                 android:hint="ULD No"
                 app:errorEnabled="true"
                 app:hintTextColor="@color/placeholder">
@@ -60,7 +60,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/uld_no"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_50sdp"
                     android:maxLength="100"
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -83,10 +83,19 @@
 
             </TextView>
 
+<!--            <Spinner-->
+<!--                android:id="@+id/uld_type"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="@dimen/_50sdp"-->
+<!--                android:layout_marginRight="5dp"-->
+<!--                android:background="@drawable/search_bg"-->
+<!--                android:spinnerMode="dropdown"-->
+<!--                app:hintTextColor="@color/placeholder"/>-->
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_60sdp"
                 android:hint="ULD Type"
                 android:textColorHint="@color/placeholder"
                 app:errorEnabled="true"
@@ -96,7 +105,7 @@
                 <AutoCompleteTextView
                     android:id="@+id/uld_type"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_50sdp"
                     android:inputType="textCapWords"
                     android:maxLength="100"
                     android:textColor="@color/black" />

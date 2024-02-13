@@ -34,6 +34,8 @@ public class LocalDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS mawb_details (actual_pcs INTEGER, weight INTEGER, volume REAL, length INTEGER, width INTEGER, height INTEGER," +
                 "cargo_category TEXT, cargo_class TEXT, cargo_status TEXT, mawb_number TEXT, hawb_number TEXT, flight_number TEXT)");
+
+        db.execSQL("");
     }
 
     @Override
@@ -148,6 +150,19 @@ public class LocalDBHelper extends SQLiteOpenHelper {
         }
         return true;
 
+    }
+
+    public boolean insertUldNumber(String uld_number, String uld_condition) {
+        db = getWritableDatabase();
+        try {
+            db.execSQL("INSERT INTO storage_details(uld_number, uld_condition)" +
+                    "VALUES ('" + uld_number + "', '" + uld_condition + "')");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     public boolean deleteMawbDetails() {

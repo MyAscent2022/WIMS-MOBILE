@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/mawb_card"
             android:orientation="horizontal">
 
@@ -53,7 +53,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="125dp"
+                        android:layout_width="@dimen/_130sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -83,7 +83,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="227dp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -121,7 +121,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="125dp"
+                        android:layout_width="@dimen/_130sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -151,7 +151,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="227dp"
+                        android:layout_width="@dimen/_150sdp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -218,6 +218,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:inputType="number"
                         android:background="@drawable/search_bg"
                         android:fontFamily="@font/manrope"
                         android:hint="Input Actual Value"
@@ -253,6 +254,7 @@
                                 android:fontFamily="@font/manrope"
                                 android:gravity="center_vertical"
                                 android:hint="0"
+                                android:inputType="number"
                                 android:lineSpacingExtra="-9sp"
                                 android:paddingLeft="10dp"
                                 android:textColor="#354546"
@@ -308,6 +310,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/search_bg"
                             android:gravity="center"
+                            android:inputType="number"
                             android:paddingRight="5dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
@@ -323,6 +326,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/search_bg"
                             android:gravity="center"
+                            android:inputType="number"
                             android:paddingRight="5dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
@@ -377,6 +381,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
+                            android:inputType="number"
                             android:background="@drawable/search_bg"
                             android:gravity="center"
                             android:paddingRight="5dp"
@@ -394,6 +399,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/search_bg"
                             android:gravity="center"
+                            android:inputType="number"
                             android:paddingRight="5dp"
                             android:textColor="@color/black"
                             android:textStyle="bold"
@@ -420,7 +426,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
+                        android:layout_height="@dimen/_50sdp"
                         android:hint="Select Cargo Category"
                         android:textColorHint="@color/placeholder"
                         app:errorEnabled="true"
@@ -470,7 +476,7 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_height="@dimen/_50sdp"
                                 android:hint="Select Cargo Class"
                                 android:textColorHint="@color/placeholder"
                                 app:errorEnabled="true"
@@ -515,7 +521,7 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_height="@dimen/_50sdp"
                                 android:hint="Select Cargo Status"
                                 android:textColorHint="@color/placeholder"
                                 app:errorEnabled="true"
