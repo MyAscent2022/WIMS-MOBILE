@@ -35,7 +35,7 @@ public class LocalDBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS mawb_details (actual_pcs INTEGER, weight INTEGER, volume REAL, length INTEGER, width INTEGER, height INTEGER," +
                 "cargo_category TEXT, cargo_class TEXT, cargo_status TEXT, mawb_number TEXT, hawb_number TEXT, flight_number TEXT)");
 
-        db.execSQL("");
+//        db.execSQL("");
     }
 
     @Override
@@ -168,7 +168,9 @@ public class LocalDBHelper extends SQLiteOpenHelper {
     public boolean deleteMawbDetails() {
         db = getWritableDatabase();
         try {
+            System.out.println("PASOOOOK NAAAA");
             db.execSQL("DELETE FROM mawb_details");
+            System.out.println("LABAAAAS NAAAA");
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -180,7 +182,7 @@ public class LocalDBHelper extends SQLiteOpenHelper {
 
     public MawbDetails getMawbDetails() {
         db = getReadableDatabase();
-        MawbDetails m=null;
+        MawbDetails m = null;
         try {
             cursor = db.rawQuery("SELECT actual_pcs, weight, volume, length, width, height, cargo_category, cargo_class, cargo_status, mawb_number, hawb_number, flight_number FROM mawb_details", null);
             if (cursor.moveToFirst()) {

@@ -445,9 +445,6 @@ public class ReceiveCargoViewModel {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
                             condition = mawbResp.getCondition();
-//                            binding.uldImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
-//                            binding.uldImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
-
                             binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
                             binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
 
@@ -737,7 +734,7 @@ public class ReceiveCargoViewModel {
             RequestBody body = bodyBuilder.build();
             String authToken = Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
             Request request = new Request.Builder()
-                    .url("http://192.168.254.201:33913/wims_api/" + "save_hawb_image")
+                    .url("http://192.168.254.215:33913/wims_api/" + "save_hawb_image")
 
 
                     .method("POST", body)

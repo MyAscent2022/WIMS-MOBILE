@@ -1087,7 +1087,6 @@ public class ReceiveCargo extends AppCompatActivity {
     };
 
 
-
     public void getMawb(List<MawbModel> mawbs){
         this.mawbList = mawbs;
         MawbDialogAdapter adapter = new MawbDialogAdapter(this, R.layout.select_mawb_list_line, mawbList);
