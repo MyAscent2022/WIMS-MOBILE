@@ -26,6 +26,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -418,32 +419,22 @@ public class StorageCargo extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(StorageCargo.this);
         View mview = getLayoutInflater().inflate(R.layout.add_cargo_images_dialog, null);
         EditText remarks;
-        Spinner spinner_cargo;
+        AutoCompleteTextView spinner_cargo;
         ImageView picture;
         CardView btn_cancel;
         LinearLayout add_image;
         picture = mview.findViewById(R.id.picture);
-        spinner_cargo = mview.findViewById(R.id.spinner_cargo);
+        spinner_cargo = mview.findViewById(R.id.sCargo);
         remarks = mview.findViewById(R.id.remarks);
         btn_cancel = mview.findViewById(R.id.btn_cancel);
         add_image = mview.findViewById(R.id.add_image);
 
 
 //        -- SET CARGO CONDITION IN DROP DOWN
-        spinner_cargo.setAdapter(new ArrayAdapter<String>(StorageCargo.this, android.R.layout.simple_list_item_1, viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this)));
+        spinner_cargo.setAdapter(new ArrayAdapter<>(StorageCargo.this, android.R.layout.simple_list_item_1, viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this)));
 
 
-        spinner_cargo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = (String) parentView.getItemAtPosition(position);
-                System.out.println("selected item >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + selectedItem);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
 
 //        save_uld.setOnClickListener(new View.OnClickListener() {
 //            @Override
