@@ -1,7 +1,9 @@
 package com.example.wims_new.ui.storeCargo.storage.view;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -12,6 +14,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,12 +26,20 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.wims_new.R;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityStorageCargoBinding;
 import com.example.wims_new.model.FlightsModel;
+import com.example.wims_new.model.MawbModel;
 import com.example.wims_new.model.MawbResponse;
+import com.example.wims_new.model.SaveUldNumberModel;
+import com.example.wims_new.model.UldModel;
 import com.example.wims_new.ui.mainMenu.MainMenu;
 import com.example.wims_new.ui.receiveCargo.adapter.ImageListAdapter;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
@@ -38,6 +50,7 @@ import com.example.wims_new.ui.storeCargo.storage.view.Model.RackModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
 import com.example.wims_new.ui.storeCargo.storage.view.viewModel.StorageCargoViewModel;
 import com.example.wims_new.utils.FunctionInterface;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -65,6 +78,8 @@ public class StorageCargo extends AppCompatActivity {
     private Uri docUri;
     private byte[] bytes;
     List<Uri> uri;
+
+    AlertDialog dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +126,8 @@ public class StorageCargo extends AppCompatActivity {
                 binding.mawbGallery.flightClass.setText(selectedCargo.getClassdesc());
                 binding.mawbGallery.pcs.setText(String.valueOf(selectedCargo.getActualPcs()));
 
-                toShowLayout();
                 viewModel.getCargoImages(StorageCargo.this, StorageCargo.this, binding, selectedCargo.getId());
+                toShowLayout();
             }
         });
 
@@ -213,9 +228,12 @@ public class StorageCargo extends AppCompatActivity {
         binding.mawbGallery.uploadCargoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this, binding);
-                layout_id = 5;
-                toShowLayout();
+
+                showAddCargoImagesDialog();
+//                viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this, binding);
+//                viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this, binding);
+//                layout_id = 5;
+//                toShowLayout();
             }
         });
 
@@ -394,6 +412,85 @@ public class StorageCargo extends AppCompatActivity {
             startActivity(in);
         }
     };
+
+
+    private void showAddCargoImagesDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(StorageCargo.this);
+        View mview = getLayoutInflater().inflate(R.layout.add_cargo_images_dialog, null);
+        EditText remarks;
+        Spinner spinner_cargo;
+        ImageView picture;
+        CardView btn_cancel;
+        LinearLayout add_image;
+        picture = mview.findViewById(R.id.picture);
+        spinner_cargo = mview.findViewById(R.id.spinner_cargo);
+        remarks = mview.findViewById(R.id.remarks);
+        btn_cancel = mview.findViewById(R.id.btn_cancel);
+        add_image = mview.findViewById(R.id.add_image);
+
+
+//        -- SET CARGO CONDITION IN DROP DOWN
+        spinner_cargo.setAdapter(new ArrayAdapter<String>(StorageCargo.this, android.R.layout.simple_list_item_1, viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this)));
+
+
+        spinner_cargo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = (String) parentView.getItemAtPosition(position);
+                System.out.println("selected item >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + selectedItem);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+//        save_uld.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                List<MawbModel> mawbs = mawbList;
+//                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+//
+//                uld_no_txt = uld_no.getText().toString().trim();
+//                System.out.println("uld_no_txt " + uld_no_txt);
+//
+//                if (uld_no.getText().toString() == "" || uld_no.getText().toString().equals("")){
+//                    alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
+//                }else if (uld_type.getText().toString().trim() == "" || uld_type.getText().toString().equals("")){
+//                    alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
+//                }else if (getCheckedMawbList().size() < 0){
+//                    alertsAndLoaders.showAlert(2,"","Please select MAWB NUMBER",ReceiveCargo.this, null);
+//                }else {
+////                    model.setUldNo(uld_no_txt);
+//                    saveUldNumberModel.setUldNumber(uld_no_txt);
+//                    model.setFlightNumber(selectedFlights.getFlightNumber());
+////                    model.setUldStatus(3);
+//                    model.setUldTypeId(getUldContainers());
+//                    saveUldNumberModel.setMawbs(mawb_arr());
+//                    saveUldNumberModel.setUlds(model);
+//
+//                    alertsAndLoaders.showAlert(4, "Are you sure?", "You want to add this ULD number?", ReceiveCargo.this, saveULD);
+//                    dialog.cancel();
+//                }
+//
+//
+//            }
+//        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        builder.setView(mview);
+        dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 
 
 }

@@ -5,10 +5,11 @@ plugins {
 android {
     namespace 'com.example.wims_new'
     compileSdk 34
+    viewBinding.enabled=true
 
     defaultConfig {
         applicationId "com.example.wims_new"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"

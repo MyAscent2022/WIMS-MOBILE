@@ -24,6 +24,7 @@ import com.example.wims_new.model.CargoConditionModel;
 import com.example.wims_new.model.CargoImagesModel;
 import com.example.wims_new.model.ImagesResponse;
 import com.example.wims_new.model.MawbResponse;
+import com.example.wims_new.model.UldResponse;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
 import com.example.wims_new.ui.storeCargo.releasing.view.Model.ReleaseCargoModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Adapter.CargoImagesAdapter;
@@ -251,12 +252,11 @@ public class StorageCargoViewModel {
         });
     }
 
-    public void getCargoConditionList(Context context, StorageCargo activity, ActivityStorageCargoBinding binding) {
+
+    public ArrayList<String> getCargoConditionList(Context context, StorageCargo activity) {
         mawbResp = new MawbResponse();
-
+        ArrayList<String> cargo_condition_arr = new ArrayList<String>();
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-//        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
-
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
         Call<MawbResponse> call = services.getCargoCondition();
         call.enqueue(new Callback<MawbResponse>() {
@@ -270,17 +270,15 @@ public class StorageCargoViewModel {
                         mawbResp = response.body();
                         if (mawbResp.getStatusCode() == 200) {
                             condition = mawbResp.getCondition();
-
-                            binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
-                            binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
-
+                            for (int i = 0; i < condition.size(); i++) {
+                                cargo_condition_arr.add(condition.get(i).getCondition());
+                            }
                         } else {
                             alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
                         }
                     } else {
-//                        DISPLAY ERROR HERE.....
+                        alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
                     }
-//                    activity.getMawbs(mawbs);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -291,7 +289,54 @@ public class StorageCargoViewModel {
                 Log.e("Error: ", t.getMessage());
             }
         });
+
+        return cargo_condition_arr;
     }
+
+
+//    public void getCargoConditionList(Context context, StorageCargo activity, ActivityStorageCargoBinding binding) {
+//        mawbResp = new MawbResponse();
+//
+//        AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
+////        dialog = alertsAndLoaders.showAlert(2, "Loading. . .", context, activity, null);
+//
+//        ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+//        Call<MawbResponse> call = services.getCargoCondition();
+//        call.enqueue(new Callback<MawbResponse>() {
+//            @Override
+//            public void onResponse(Call<MawbResponse> call, Response<MawbResponse> response) {
+//                dialog.cancel();
+//
+//                try {
+//                    condition = new ArrayList<>();
+//                    if (response.code() == 200) {
+//                        mawbResp = response.body();
+//                        if (mawbResp.getStatusCode() == 200) {
+//                            condition = mawbResp.getCondition();
+//
+//                            binding.cargoImagesLayout.spinner1.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+//                            binding.cargoImagesLayout.spinner2.setAdapter(new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, cargoCondition(condition)));
+//
+//
+//
+//                        } else {
+//                            alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
+//                        }
+//                    } else {
+////                        DISPLAY ERROR HERE.....
+//                    }
+////                    activity.getMawbs(mawbs);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MawbResponse> call, Throwable t) {
+//                Log.e("Error: ", t.getMessage());
+//            }
+//        });
+//    }
 
     private String[] cargoCondition(List<CargoConditionModel> condition) {
         String[] ar = new String[condition.size()];
