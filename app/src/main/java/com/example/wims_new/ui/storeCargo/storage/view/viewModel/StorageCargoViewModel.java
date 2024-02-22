@@ -514,7 +514,6 @@ public class StorageCargoViewModel {
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.e("Error:", t.getMessage());
-
                 System.out.println("Check your connection");
                 Log.e("Error:", t.getMessage());
                 AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
