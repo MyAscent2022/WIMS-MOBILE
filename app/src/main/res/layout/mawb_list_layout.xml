@@ -142,19 +142,19 @@
                     android:background="@drawable/btn_upload">
                     
                 </ImageView>
-                
+
                 <LinearLayout
                     android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_50sdp"
+                    android:layout_height="64dp"
                     android:layout_gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="@dimen/_15sdp"
                         android:layout_height="@dimen/_15sdp"
-                        android:background="@drawable/img_load_box"
                         android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_10sdp">
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/img_load_box">
 
                     </ImageView>
 
@@ -163,9 +163,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal|top"
-                        android:textSize="10sp"
+                        android:text="UPDATE ULD PHOTO"
                         android:textColor="@color/blue"
-                        android:text="UPDATE ULD PHOTO">
+                        android:textSize="10sp">
 
                     </TextView>
 

@@ -143,11 +143,12 @@ public class RackLocationViewModel {
                     sDialog.cancel();
                     ReleaseCargoResponse res = new ReleaseCargoResponse();
                     res = response.body();
-                    if (response.code() == 200) {
+                    if (res.getStatusCode() == 200) {
                         alertsAndLoaders.showAlert(0, "", "Successfully Released", context, activity.refreshList);
                     } else {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        alertsAndLoaders.showAlert(2, "", jObjError.get("message").toString(), context, null);
+                        alertsAndLoaders.showAlert(1, "", res.getMessage(), context, null);
                     }
 
                 } catch (Exception e) {

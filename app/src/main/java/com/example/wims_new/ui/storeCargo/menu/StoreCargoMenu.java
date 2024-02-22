@@ -34,14 +34,6 @@ public class StoreCargoMenu extends AppCompatActivity {
 
     private void eventHandler() {
 
-//        binding.storeCargo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent in = new Intent(StoreCargoMenu.this, StorageCargo.class);
-//                startActivity(in);
-//            }
-//        });
-
         binding.storeCargo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

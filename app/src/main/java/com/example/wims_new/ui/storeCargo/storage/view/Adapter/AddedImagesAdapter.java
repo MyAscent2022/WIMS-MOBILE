@@ -9,32 +9,29 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.wims_new.R;
 import com.example.wims_new.model.CargoImagesModel;
-import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
 
 import java.util.List;
 
-public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
+public class AddedImagesAdapter extends ArrayAdapter<CargoImagesModel> {
 
     private Context mContext;
     int mResource;
 
-    public CargoImagesAdapter(Context context, int resource, List<CargoImagesModel> objects) {
+    public AddedImagesAdapter(Context context, int resource, List<CargoImagesModel> objects) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             String cargo_condition = getItem(position).getCargoCondition();
             String remarks = getItem(position).getRemarks();
-
-
-
+            Uri img = getItem(position).getImageUri();
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
@@ -47,14 +44,8 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
 
             cargo_condition_txt.setText(cargo_condition);
             remarks_txt.setText(remarks);
-
-            if(getItem(position).getImageUri() == null){
-                String img = getItem(position).getFilePath().replace("\\", "/");
-                show_image(img, img_view);
-            }else{
-                Uri img = getItem(position).getImageUri();
-                img_view.setImageURI(img);
-            }
+//            show_image(img, img_view);
+            img_view.setImageURI(img);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,14 +53,5 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
         return convertView;
     }
 
-    public void show_image(String filename, ImageView img){
 
-
-//        String base_url = "http://192.168.20.179:33913/wims_api/";
-        String base_url = "http://192.168.254.235:33911/wims_api/";
-//        String base_url = "http://112.199.119.250:8030/wims_api/";
-        //String base_url=BuildConfig.DEVICE_BASE_URL;
-        String link = base_url + "view_checklist_image/?file_path=" + filename;
-        Glide.with(mContext).load(link).into(img);
-    }
 }
