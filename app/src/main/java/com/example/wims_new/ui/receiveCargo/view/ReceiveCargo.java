@@ -175,8 +175,6 @@ public class ReceiveCargo extends AppCompatActivity {
     public void onBackPressed() {
         if (layout_id == 1){
             super.onBackPressed();
-//            Intent in = new Intent(ReceiveCargo.this, MainMenu.class);
-//            startActivity(in);
         }else {
             layout_id--;
             toShowLayout();
@@ -424,7 +422,6 @@ public class ReceiveCargo extends AppCompatActivity {
             public void onClick(View view) {
                 is_uld = true;
                 is_uld_image = true;
-//                layout_id = 10;
                 layout_id = 7;
                 binding.cargoImagesLayout.uldNumber.setText(selectedUlds.getUldNumber());
 
@@ -1000,19 +997,22 @@ public class ReceiveCargo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-
+                uld_no_txt = selectedUlds.getUldNumber();
                 if (update_uld_no.getText().toString() == null || update_uld_no.getText().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
                 }else if (update_uld_type.getText().toString().trim() == null || update_uld_type.getText().toString().equals(null)){
                     alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
                 }else {
-                    updateUldNumberModel.getUlds().setUldNumber(update_uld_no.getText().toString().trim());
+//                    System.out.println("ULD NUMBER >>>>>>>>>>>>> " + update_uld_no.getText().toString().trim());
+//                    updateUldNumberModel.getUlds().setUldNumber(update_uld_no.getText().toString().trim());
+
+                    model.setUldNumber(update_uld_no.getText().toString());
+                    model.setUldTypeId(getUldContainers());
+                    updateUldNumberModel.setUlds(model);
+                    alertsAndLoaders.showAlert(4, "Are you sure?", "You want to update this ULD number?", ReceiveCargo.this, updateULD);
+                    dialog.cancel();
                 }
-                model.setUldNumber(update_uld_no.getText().toString());
-                model.setUldTypeId(getUldContainers());
-                updateUldNumberModel.setUlds(model);
-                alertsAndLoaders.showAlert(4, "Are you sure?", "You want to update this ULD number?", ReceiveCargo.this, updateULD);
-                dialog.cancel();
+
             }
         });
 
@@ -1112,6 +1112,9 @@ public class ReceiveCargo extends AppCompatActivity {
             if (c.getType().equals(uld_type1) || c.getType().equals(update_uld_type1)) {
                 return c.getId();
             }
+//            if(uld_type.getText().toString().equals(c.getType())){
+//                return c.getId();
+//            }
         }
         return 0;
     }

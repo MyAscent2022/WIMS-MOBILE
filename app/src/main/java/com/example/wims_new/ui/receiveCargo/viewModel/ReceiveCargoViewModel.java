@@ -135,17 +135,26 @@ public class ReceiveCargoViewModel {
                     searchFlights = new ArrayList<>();
                     resp = response.body();
                     if (response.code() == 200) {
-                        flights = resp.getData().getFlights();
-                        searchFlights = flights;
-                        viewData(activity, binding);
-                        binding.flightListLayout.refreshLayout.setRefreshing(false);
+                        if(resp.getStatusCode() == 200){
+                            flights = resp.getData().getFlights();
+                            searchFlights = flights;
+                            viewData(activity, binding);
+                            binding.flightListLayout.refreshLayout.setRefreshing(false);
+
+                            activity.getFlights(flights);
+                            activity.getSearchFlights(searchFlights);
+
+                        }else{
+                            alertsAndLoaders.showAlert(5, "", resp.getMessage(), context, activity.backToMain);
+                        }
+
                     } else {
-//                        alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
+                        alertsAndLoaders.showAlert(5, "", resp.getMessage(), context, activity.backToMain);
                     }
-                    activity.getFlights(flights);
-                    activity.getSearchFlights(searchFlights);
+
                 } catch (Exception e) {
                     e.printStackTrace();
+                    alertsAndLoaders.showAlert(5, "", e.getMessage(), context, activity.backToMain);
                 }
             }
 
