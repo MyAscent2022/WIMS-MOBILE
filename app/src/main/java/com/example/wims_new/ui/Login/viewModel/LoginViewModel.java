@@ -62,7 +62,8 @@ public class LoginViewModel {
                                 user = resp.getData();
                                 SharedPref sharedPref = new SharedPref();
 
-                                sharedPref.writePrefString(context, sharedPref.USER_ID, String.valueOf(user.getId()));
+                                sharedPref.writePrefString(context, SharedPref.USER_ID, String.valueOf(user.getId()));
+                                sharedPref.writePrefString(context, SharedPref.USERNAME,user.getUsername());
                                 Intent intent = new Intent(context, MainMenu.class);
                                 intent.putExtra("role_id", user.getRoleId());
                                 activity.startActivity(intent);

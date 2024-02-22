@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.example.wims_new.R;
 import com.example.wims_new.model.CargoImagesModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
+import com.example.wims_new.ui.storeCargo.storage.view.StorageCargo;
 
 import java.util.List;
 
@@ -20,11 +21,13 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
 
     private Context mContext;
     int mResource;
+    StorageCargo mActivity;
 
-    public CargoImagesAdapter(Context context, int resource, List<CargoImagesModel> objects) {
+    public CargoImagesAdapter(Context context, int resource, List<CargoImagesModel> objects, StorageCargo activity) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
+        mActivity = activity;
     }
 
     @Override
@@ -32,6 +35,7 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
         try {
             String cargo_condition = getItem(position).getCargoCondition();
             String remarks = getItem(position).getRemarks();
+            boolean toAdd = getItem(position).isToAddImage();
 
 
 
@@ -42,6 +46,7 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
             TextView cargo_condition_txt = convertView.findViewById(R.id.cargo_condition);
             TextView remarks_txt = convertView.findViewById(R.id.remarks);
             ImageView img_view = convertView.findViewById(R.id.img);
+            ImageView btn_remove = convertView.findViewById(R.id.btn_remove);
 
 //            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -55,6 +60,20 @@ public class CargoImagesAdapter extends ArrayAdapter<CargoImagesModel> {
                 Uri img = getItem(position).getImageUri();
                 img_view.setImageURI(img);
             }
+
+            if(toAdd){
+                btn_remove.setVisibility(View.VISIBLE);
+            }else{
+                btn_remove.setVisibility(View.GONE);
+            }
+
+
+            btn_remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivity.removeAddedStorageCargo(position);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

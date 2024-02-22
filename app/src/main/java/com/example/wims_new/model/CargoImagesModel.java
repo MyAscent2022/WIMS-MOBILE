@@ -15,6 +15,16 @@ public class CargoImagesModel implements Serializable {
     String cargoCondition;
     Uri imageUri;
 
+    boolean toAddImage;
+
+    public boolean isToAddImage() {
+        return toAddImage;
+    }
+
+    public void setToAddImage(boolean toAddImage) {
+        this.toAddImage = toAddImage;
+    }
+
     public long getId() {
         return id;
     }

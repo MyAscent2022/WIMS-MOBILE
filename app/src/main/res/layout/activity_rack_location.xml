@@ -69,7 +69,7 @@
         android:id="@+id/locator_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="HILARY"
+        android:text=""
         android:fontFamily="@font/manrope"
         android:textStyle="bold"
         android:gravity="center"

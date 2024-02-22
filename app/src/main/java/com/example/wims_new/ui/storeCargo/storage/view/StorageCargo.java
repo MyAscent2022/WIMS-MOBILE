@@ -60,6 +60,7 @@ import com.example.wims_new.ui.storeCargo.storage.view.Model.RackModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
 import com.example.wims_new.ui.storeCargo.storage.view.viewModel.StorageCargoViewModel;
 import com.example.wims_new.utils.FunctionInterface;
+import com.example.wims_new.utils.SharedPref;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
@@ -75,12 +76,13 @@ public class StorageCargo extends AppCompatActivity {
 
     ActivityStorageCargoBinding binding;
     StorageCargoViewModel viewModel;
-    List<StorageModel> storage,searchStorage;
+    List<StorageModel> storage, searchStorage;
     List<RackModel> racks;
     List<CargoImagesModel> images, image1;
     CargoImagesModel added_images;
     RackDetailsModel rackDetails;
     StorageModel selectedCargo;
+    String[] layers, rackslist,searchedRackList;
     List<CargoConditionModel> conditionModel;
     int layout_id = 1;
     boolean is_pic1 = false, is_uploaded = false;
@@ -99,6 +101,9 @@ public class StorageCargo extends AppCompatActivity {
     String cargo_text = "";
     long cargoConditionId = 0;
     AutoCompleteTextView cargoCondition;
+
+    SharedPref sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,8 +118,10 @@ public class StorageCargo extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        sharedPref = new SharedPref();
         viewModel = new StorageCargoViewModel();
         toShowLayout();
+        racks = new ArrayList<>();
         viewModel.getStoreCargo(this, binding, this);
 
         conditionModel = new ArrayList<>();
@@ -143,7 +150,7 @@ public class StorageCargo extends AppCompatActivity {
                 } else {
                     for (StorageModel s : storage) {
                         if ((s.getFlightNumber() != null && s.getFlightNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT))) || (s.getMawbNumber() != null && s.getMawbNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT)))
-                        || (s.getHawbNumber() != null && s.getHawbNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT))) || (s.getClassDesc() !=null && s.getClassDesc().toUpperCase().contains(newText.toUpperCase(Locale.ROOT)))) {
+                                || (s.getHawbNumber() != null && s.getHawbNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT))) || (s.getClassDesc() != null && s.getClassDesc().toUpperCase().contains(newText.toUpperCase(Locale.ROOT)))) {
                             searchStorage.add(s);
                         }
 
@@ -212,17 +219,16 @@ public class StorageCargo extends AppCompatActivity {
                 binding.cargoDetails.hawbNo.setText(selectedCargo.getHawbNumber());
                 binding.cargoDetails.totalWeight.setText("");
                 binding.cargoDetails.cargoClass.setText(selectedCargo.getCargoStatus());
-                binding.cargoDetails.storagePersonnel.setText("");
+                binding.cargoDetails.storagePersonnel.setText(sharedPref.readPrefString(StorageCargo.this, sharedPref.USERNAME));
 //                binding.cargoDetails.storedItemPcs.setText(selectedCargo.getActualPcs());
 //                binding.cargoDetails.rcvPcs.setText(selectedCargo.getActualPcs());
-                binding.cargoDetails.rackName.setText(selectedCargo.getRackName());
-                binding.cargoDetails.layerName.setText(selectedCargo.getLayerName());
-
+                //binding.cargoDetails.rackName.setText(selectedCargo.getRackName());
+                //binding.cargoDetails.layerName.setText(selectedCargo.getLayerName());
                 layout_id = 4;
 
 
                 viewModel.getRacks(StorageCargo.this, StorageCargo.this, binding);
-                viewModel.getLayers(StorageCargo.this, StorageCargo.this, binding);
+                //viewModel.getLayers(StorageCargo.this, StorageCargo.this, binding);
 //                binding.cargoDetails.rackName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, viewModel.getRacks(StorageCargo.this,this, binding)));
 //                binding.cargoDetails.layerName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, viewModel.getLayers(StorageCargo.this,this, binding)));
 
@@ -309,6 +315,24 @@ public class StorageCargo extends AppCompatActivity {
 //            }
 //        });
 
+
+        binding.cargoDetails.layerName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                getRackList(binding.cargoDetails.layerName.getText().toString());
+            }
+        });
 
     }
 
@@ -431,6 +455,11 @@ public class StorageCargo extends AppCompatActivity {
         this.searchStorage = searchStorage;
     }
 
+    public void removeAddedStorageCargo(int index) {
+        images.remove(index);
+        viewImg(StorageCargo.this, binding);
+    }
+
     public void getRacks(List<RackModel> racks) {
         this.racks = racks;
     }
@@ -461,7 +490,7 @@ public class StorageCargo extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void perform() {
-            viewModel.saveRacks(StorageCargo.this, binding, uri,image1, StorageCargo.this,
+            viewModel.saveRacks(StorageCargo.this, binding, uri, images, StorageCargo.this,
                     binding.cargoDetails.rackName.getText().toString().trim(),
                     binding.cargoDetails.layerName.getText().toString().trim(),
                     selectedCargo.getRackUtilId(),
@@ -546,6 +575,7 @@ public class StorageCargo extends AppCompatActivity {
                 added_images.setCargoConditionId(getConditionId());
                 added_images.setRemarks(remarks.getText().toString());
                 added_images.setImageUri(imageUri);
+                added_images.setToAddImage(true);
                 images.add(added_images);
                 image1.add(added_images);
                 viewImg(StorageCargo.this, binding);
@@ -571,34 +601,35 @@ public class StorageCargo extends AppCompatActivity {
 
     private void viewImg(Context context, ActivityStorageCargoBinding binding) {
         try {
-            CargoImagesAdapter adapter1 = new CargoImagesAdapter(context, R.layout.store_cargo_images_line, images);
+            CargoImagesAdapter adapter1 = new CargoImagesAdapter(context, R.layout.store_cargo_images_line, images, StorageCargo.this);
             binding.mawbGallery.listView.setAdapter(adapter1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void getImages(List<CargoImagesModel> images){
+    public void getImages(List<CargoImagesModel> images) {
         this.images = images;
     }
-    public void getConditionList(List<CargoConditionModel> conditionModel){
+
+    public void getConditionList(List<CargoConditionModel> conditionModel) {
         this.conditionModel = conditionModel;
     }
 
-    private String[] conditionList(){
+    private String[] conditionList() {
         String[] arr = new String[conditionModel.size()];
         int count = 0;
         System.out.println("CONDITION MODEL >>>>>> " + conditionModel.size());
-        for(CargoConditionModel model : conditionModel){
+        for (CargoConditionModel model : conditionModel) {
             arr[count] = model.getCondition();
             count++;
         }
         return arr;
     }
 
-    private int getConditionId(){
-        for(CargoConditionModel model : conditionModel){
-            if(cargoCondition.getText().toString().equals(model.getCondition())){
+    private int getConditionId() {
+        for (CargoConditionModel model : conditionModel) {
+            if (cargoCondition.getText().toString().equals(model.getCondition())) {
                 return model.getId();
             }
         }
@@ -612,6 +643,74 @@ public class StorageCargo extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void getRacksAndLayers(List<RackModel> list) {
+        this.racks = list;
+        int count_layer_list = 0;
+       int count_list = 0;
+        StringBuilder st_layers = new StringBuilder();
+        //StringBuilder st_racks = new StringBuilder();
+        for (RackModel model : list) {
+            System.out.println(st_layers+ "  "+model.getLayerName());
+            if (!st_layers.toString().contains(model.getLayerName())) {
+                if (count_layer_list != 0) {
+                    st_layers.append(",").append(model.getLayerName());
+                } else {
+                    st_layers.append(model.getLayerName());
+                }
+
+                count_layer_list++;
+            }
+
+          /*  if (count_list != 0) {
+                st_racks.append(",").append(model.getLayerName());
+            } else {
+                st_racks.append(model.getLayerName());
+            }
+
+            count_list++;*/
+
+            count_list++;
+            if(count_list==list.size()){
+                binding.cargoDetails.layerName.setText("");
+                layers = st_layers.toString().split(",");
+                System.out.println("SIZE>>>>>>"+layers.length);
+                binding.cargoDetails.layerName.setAdapter(new ArrayAdapter<String>(StorageCargo.this, android.R.layout.simple_list_item_1, layers));
+            }
+        }
+
+
+
+
+
+
+        //getRackList(binding.cargoDetails.layerName.getText().toString());
+    }
+
+    private void getRackList(String layer){
+        StringBuilder st_racks=new StringBuilder();
+
+        int count_list=0;
+        for (RackModel model : racks) {
+
+
+            if(layer.equals(model.getLayerName())){
+                if (count_list != 0) {
+                    st_racks.append(",").append(model.getRackName());
+                } else {
+                    st_racks.append(model.getRackName());
+                }
+
+                count_list++;
+            }
+
+
+        }
+        binding.cargoDetails.rackName.setText("");
+        rackslist= st_racks.toString().split(",");
+        binding.cargoDetails.rackName.setAdapter(new ArrayAdapter<String>(StorageCargo.this, android.R.layout.simple_list_item_1, rackslist));
+
     }
 
 }
