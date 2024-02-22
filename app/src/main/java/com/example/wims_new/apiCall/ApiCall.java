@@ -2,6 +2,7 @@ package com.example.wims_new.apiCall;
 
 
 import com.example.wims_new.model.CargoActLogsModel;
+import com.example.wims_new.model.CargoImagesModel;
 import com.example.wims_new.model.ConfirmCargoModel;
 import com.example.wims_new.model.FlightsResponse;
 import com.example.wims_new.model.HawbDetails;
@@ -66,12 +67,11 @@ public interface ApiCall {
 
     @Multipart
     @POST("upload_storage_image")
-    Call<Integer> uploadStorageImage(@Part List<MultipartBody.Part> files, @Query("hawb_id") int hawb_id, @Query("mawb_number") String mawb_number, @Query("cargo_condition1") String cargo_condition1, @Query("cargo_condition2") String cargo_condition2, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
+    Call<Integer> uploadStorageImage(@Part List<MultipartBody.Part> files, @Query("hawb_id") int hawb_id, @Query("mawb_number") String mawb_number, @Query("list_image_details") String list_image_details);
 
     @Multipart
     @POST("save_uld_image")
     Call<UldImagesResponse> saveUldImage(@Part List<MultipartBody.Part> files, @Query("uld_condition1") String uld_condition1, @Query("uld_condition2") String uld_condition2, @Query("flight_number") String flight_number, @Query("uld_number") String uld_number, @Query("remarks1") String remarks1, @Query("remarks2") String remarks2);
-
 
     @GET("get_uld_type")
     Call<UldResponse>getUldTypes();

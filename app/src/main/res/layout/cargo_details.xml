@@ -285,6 +285,7 @@
                     android:textColor="#01256D"
                     android:fontFamily="@font/manrope"/>
 
+
                 <EditText
                     android:id="@+id/stored_item_pcs"
                     android:layout_width="match_parent"

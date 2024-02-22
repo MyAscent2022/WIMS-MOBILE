@@ -7,20 +7,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:orientation="vertical"
         android:layout_margin="5dp"
-        android:background="@drawable/card_mawb">
+        android:background="@drawable/card_mawb"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="@dimen/_200sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="227dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center_horizontal|top"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="FLIGHT NO."
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/flight_no"
+                    android:layout_width="227dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
+                    android:lineSpacingExtra="-9sp"
+                    android:text="FLIGHT NO"
+                    android:textColor="#0038A8"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -30,49 +58,21 @@
                     android:fontFamily="@font/manrope"
                     android:gravity="center_horizontal|top"
                     android:lineSpacingExtra="-9sp"
-                    android:text="FLIGHT NO."
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/flight_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="-9sp"
-                    android:text="FLIGHT NO"
-                    android:textColor="#0038A8"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/_97sdp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center_horizontal|top"
-                    android:lineSpacingExtra="-9sp"
                     android:text="CLASS"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/class1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
                     android:lineSpacingExtra="-9sp"
                     android:text="CLASS"
                     android:textColor="#354546"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
@@ -80,10 +80,10 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:gravity="center">
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="@dimen/_115sdp"
@@ -104,13 +104,13 @@
                     android:id="@+id/mawb_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
                     android:lineSpacingExtra="-9sp"
                     android:text="MAWB NO"
                     android:textColor="#263238"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -132,14 +132,15 @@
                     android:id="@+id/hawb_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
                     android:lineSpacingExtra="-9sp"
                     android:text="HAWB NO"
                     android:textColor="#263238"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center" />
+                    android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="wrap_content"
@@ -159,13 +160,13 @@
                     android:id="@+id/pcs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
                     android:lineSpacingExtra="-9sp"
                     android:text="PCS"
                     android:textColor="#263238"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:fontFamily="@font/manrope"
-                    android:gravity="center" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>

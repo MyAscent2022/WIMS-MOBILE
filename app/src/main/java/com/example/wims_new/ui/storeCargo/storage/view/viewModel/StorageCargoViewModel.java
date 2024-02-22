@@ -24,11 +24,13 @@ import com.example.wims_new.model.CargoConditionModel;
 import com.example.wims_new.model.CargoImagesModel;
 import com.example.wims_new.model.ImagesResponse;
 import com.example.wims_new.model.MawbResponse;
+import com.example.wims_new.model.ResBody;
 import com.example.wims_new.model.UldResponse;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
 import com.example.wims_new.ui.storeCargo.releasing.view.Model.ReleaseCargoModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Adapter.CargoImagesAdapter;
 import com.example.wims_new.ui.storeCargo.storage.view.Adapter.StorageCargoAdapter;
+import com.example.wims_new.ui.storeCargo.storage.view.Model.CargoImagesRequestModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackDetailsModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackResponse;
@@ -37,18 +39,25 @@ import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageResponse;
 import com.example.wims_new.ui.storeCargo.storage.view.StorageCargo;
 import com.example.wims_new.utils.RotateImage;
 import com.example.wims_new.utils.SharedPref;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Credentials;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,7 +65,7 @@ import retrofit2.Response;
 public class StorageCargoViewModel {
     private SweetAlertDialog dialog;
     StorageResponse resp;
-    List<StorageModel> storage;
+    List<StorageModel> storage, searchStorage;
     List<CargoImagesModel> images;
     List<ReleaseCargoModel> releasingCargo;
     RackResponse rackResp;
@@ -88,6 +97,7 @@ public class StorageCargoViewModel {
                     if (resp.isStatus()) {
                         if (resp.getStatusCode() == 200) {
                             storage = resp.getData().getStorages();
+                            searchStorage = storage;
 //                        int layout_id = 1;
 //                        toShowLayout(binding, layout_id);
                             viewData(activity, binding);
@@ -95,6 +105,7 @@ public class StorageCargoViewModel {
                             alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
                         }
                         activity.getStorage(storage);
+                        activity.getSearchStorage(searchStorage);
                     } else {
                         alertsAndLoaders.showAlert(6, "", "No Data Found", context, activity.backToMenu);
                     }
@@ -253,7 +264,7 @@ public class StorageCargoViewModel {
     }
 
 
-    public ArrayList<String> getCargoConditionList(Context context, StorageCargo activity) {
+    public void getCargoConditionList(Context context, StorageCargo activity) {
         mawbResp = new MawbResponse();
         ArrayList<String> cargo_condition_arr = new ArrayList<String>();
         AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
@@ -279,6 +290,9 @@ public class StorageCargoViewModel {
                     } else {
                         alertsAndLoaders.showAlert(1, "", mawbResp.getMessage(), context, activity.doNothing);
                     }
+
+                    activity.getConditionList(condition);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -290,7 +304,7 @@ public class StorageCargoViewModel {
             }
         });
 
-        return cargo_condition_arr;
+//        return cargo_condition_arr;
     }
 
 
@@ -346,7 +360,7 @@ public class StorageCargoViewModel {
         return ar;
     }
 
-    public void saveRacks(Context context, ActivityStorageCargoBinding binding, List<Uri> uri, StorageCargo activity, String rack_name, String layer_name, int rack_util_id, String mawb_number, String hawb_number, int hawb_id, String flight_number) {
+    public void saveRacks(Context context, ActivityStorageCargoBinding binding, List<Uri> uri,List<CargoImagesModel> images, StorageCargo activity, String rack_name, String layer_name, int rack_util_id, String mawb_number, String hawb_number, int hawb_id, String flight_number) {
         CargoActLogsModel response = new CargoActLogsModel();
         SharedPref util = new SharedPref();
         AlertsAndLoaders alert = new AlertsAndLoaders();
@@ -365,7 +379,7 @@ public class StorageCargoViewModel {
 
                     if (response.code() == 200) {
 //                        -- SUCCESS MESSAGE
-                        uploadImage(context, binding, activity, uri, dialog, hawb_id, mawb_number);
+                        uploadImage(context, binding, activity, uri, images, dialog, hawb_id, mawb_number);
 //                        alertsAndLoaders.showAlert(0, "", "Successfully updated Storage", context, activity.goToCargoList);
                     } else {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -447,15 +461,19 @@ public class StorageCargoViewModel {
                         if (imgResp.getStatusCode() == 200) {
                             images = imgResp.getData().getImages();
                             viewImg(context, binding);
+
+                            activity.getImages(images);
                         } else {
                             alertsAndLoaders.showAlert(1, "", imgResp.getMessage(), context, activity.doNothing);
                         }
                     } else {
                         alertsAndLoaders.showAlert(1, "", imgResp.getMessage(), context, activity.doNothing);
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -463,6 +481,7 @@ public class StorageCargoViewModel {
                 Log.e("Error: ", t.getMessage());
             }
         });
+
     }
 
     private void viewImg(Context context, ActivityStorageCargoBinding binding) {
@@ -474,9 +493,16 @@ public class StorageCargoViewModel {
         }
     }
 
-    public void uploadImage(Context context, ActivityStorageCargoBinding binding, StorageCargo activity, List<Uri> uri,SweetAlertDialog dialog, int hawb_id, String mawb_number) {
+    public void uploadImage(Context context, ActivityStorageCargoBinding binding, StorageCargo activity, List<Uri> uri,List<CargoImagesModel> images,SweetAlertDialog dialog, int hawb_id, String mawb_number) {
 
-        //response.setFiles(getFilePart(uri,context));
+//        String cargoImagesDetails = images.toString();
+//        System.out.println("DETAILSSSS >>>>>>>>>>>>>>>>>>>> " + cargoImagesDetails);
+
+        CargoImagesRequestModel req = new CargoImagesRequestModel();
+        req.setImagesEntity(images);
+
+        Gson gson = new Gson();
+        String list_string = gson.toJson(req);
 
         List<String> modifiedFilePaths = new ArrayList<>();
         for (Uri u : uri) {
@@ -484,7 +510,7 @@ public class StorageCargoViewModel {
         }
 
         ApiCall services = ServiceGenerator.createService(ApiCall.class, BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
-        Call<Integer> call = services.uploadStorageImage(getFilePart(uri,context), hawb_id, mawb_number, binding.cargoImagesLayout.spinner1.getSelectedItem().toString(), binding.cargoImagesLayout.spinner2.getSelectedItem().toString(), binding.cargoImagesLayout.remarks.getText().toString(), binding.cargoImagesLayout.remarks2.getText().toString());
+        Call<Integer> call = services.uploadStorageImage(getFilePart(uri,context), hawb_id, mawb_number, list_string);
         SweetAlertDialog finalDialog = dialog;
         call.enqueue(new Callback<Integer>() {
             @Override
@@ -554,6 +580,72 @@ public class StorageCargoViewModel {
         }
         return finalFile;
     }
+
+
+
+
+    public void to_upload(Context context, ActivityReceiveCargoBinding binding,StorageCargo activity,List<Uri> uri, List<CargoImagesModel> images, String[] fname, SweetAlertDialog dialog, int hawb_id, String mawb_number ) {
+        db = new LocalDBHelper(context);
+        try {
+            OkHttpClient.Builder b = new OkHttpClient.Builder();
+            b.connectTimeout(5, TimeUnit.MINUTES) // connect timeout
+                    .writeTimeout(5, TimeUnit.MINUTES) // write timeout
+                    .readTimeout(5, TimeUnit.MINUTES); // read timeout
+            OkHttpClient client = new OkHttpClient();
+            client = b.build();
+            MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
+            MultipartBody.Builder builder = bodyBuilder.setType(MultipartBody.FORM);
+
+            for (CargoImagesModel imageModel : images) {
+                bodyBuilder.addFormDataPart("remarks[]", imageModel.getRemarks())
+                        .addFormDataPart("cargoConditionIds[]", String.valueOf(imageModel.getCargoConditionId()));
+            }
+
+            String[] ext = context.getContentResolver().getType(uri.get(0)).split("/");
+            File f1=compressFile(uri.get(0),  context);
+
+
+
+            bodyBuilder.setType(MultipartBody.FORM)
+                    .addFormDataPart("file[]", fname[0]+"."+ext[1],
+                            RequestBody.create(MediaType.parse("application/octet-stream"), f1));
+
+            String[] ext1 = context.getContentResolver().getType(uri.get(1)).split("/");
+            File f2=compressFile(uri.get(1),  context);
+
+            bodyBuilder.setType(MultipartBody.FORM)
+                    .addFormDataPart("file[]", fname[1]+"."+ext1[1],
+                            RequestBody.create(MediaType.parse("application/octet-stream"), f2));
+
+            // MediaType mediaType = MediaType.parse("text/plain");
+            RequestBody body = bodyBuilder.build();
+            String authToken = Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD);
+            Request request = new Request.Builder()
+                    .url("http://192.168.254.215:33913/wims_api/" + "save_hawb_image")
+
+
+                    .method("POST", body)
+//                    .addHeader("Authorization", authToken)
+                    .build();
+            Gson gson = new Gson();
+            ResponseBody responseBody = client.newCall(request).execute().body();
+            ResBody res = new ResBody();
+            String resp = responseBody.string();
+            System.out.println("my resp " + resp);
+            try {
+                res = gson.fromJson(resp, ResBody.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 
 
 }
