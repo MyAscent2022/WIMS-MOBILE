@@ -3,12 +3,15 @@ package com.example.wims_new.ui.storeCargo.storage.view;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
@@ -36,6 +40,8 @@ import android.widget.TextView;
 import com.example.wims_new.R;
 import com.example.wims_new.common.functionsMethods.AlertsAndLoaders;
 import com.example.wims_new.databinding.ActivityStorageCargoBinding;
+import com.example.wims_new.model.CargoConditionModel;
+import com.example.wims_new.model.CargoImagesModel;
 import com.example.wims_new.model.FlightsModel;
 import com.example.wims_new.model.MawbModel;
 import com.example.wims_new.model.MawbResponse;
@@ -46,6 +52,9 @@ import com.example.wims_new.ui.receiveCargo.adapter.ImageListAdapter;
 import com.example.wims_new.ui.receiveCargo.view.ReceiveCargo;
 import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
 import com.example.wims_new.ui.storeCargo.releasing.view.RackLocation;
+import com.example.wims_new.ui.storeCargo.storage.view.Adapter.AddedImagesAdapter;
+import com.example.wims_new.ui.storeCargo.storage.view.Adapter.CargoImagesAdapter;
+import com.example.wims_new.ui.storeCargo.storage.view.Adapter.StorageCargoAdapter;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackDetailsModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.RackModel;
 import com.example.wims_new.ui.storeCargo.storage.view.Model.StorageModel;
@@ -66,22 +75,30 @@ public class StorageCargo extends AppCompatActivity {
 
     ActivityStorageCargoBinding binding;
     StorageCargoViewModel viewModel;
-    List<StorageModel> storage;
+    List<StorageModel> storage,searchStorage;
     List<RackModel> racks;
+    List<CargoImagesModel> images, image1;
+    CargoImagesModel added_images;
     RackDetailsModel rackDetails;
     StorageModel selectedCargo;
+    List<CargoConditionModel> conditionModel;
     int layout_id = 1;
     boolean is_pic1 = false, is_uploaded = false;
     private Uri imageUri;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static String cargoFname = "", select_b64 = "";
-    String[] fnames;
+    String fnames = "";
     private Uri docUri;
     private byte[] bytes;
     List<Uri> uri;
 
     AlertDialog dialog = null;
 
+    boolean is_adding = false;
+    ImageView picture;
+    String cargo_text = "";
+    long cargoConditionId = 0;
+    AutoCompleteTextView cargoCondition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,14 +115,52 @@ public class StorageCargo extends AppCompatActivity {
 
         viewModel = new StorageCargoViewModel();
         toShowLayout();
-        viewModel.getStoreCargo(this,binding,this);
+        viewModel.getStoreCargo(this, binding, this);
+
+        conditionModel = new ArrayList<>();
+        viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this);
 
         uri = new ArrayList<>();
-        fnames = new String[2];
+//        fnames = new String[2];
+        images = new ArrayList<>();
+        image1 = new ArrayList<>();
 
     }
 
-    private void eventHandler(){
+    private void eventHandler() {
+
+        binding.mawbList.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchStorage = new ArrayList<>();
+                if (newText.equals("") || TextUtils.isEmpty(newText)) {
+                    searchStorage = storage;
+                } else {
+                    for (StorageModel s : storage) {
+                        if ((s.getFlightNumber() != null && s.getFlightNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT))) || (s.getMawbNumber() != null && s.getMawbNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT)))
+                        || (s.getHawbNumber() != null && s.getHawbNumber().toUpperCase().contains(newText.toUpperCase(Locale.ROOT))) || (s.getClassDesc() !=null && s.getClassDesc().toUpperCase().contains(newText.toUpperCase(Locale.ROOT)))) {
+                            searchStorage.add(s);
+                        }
+
+                    }
+                }
+                viewData(StorageCargo.this, binding);
+                return false;
+            }
+        });
+
+        binding.mawbList.refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewModel.getStoreCargo(StorageCargo.this, binding, StorageCargo.this);
+                binding.mawbList.refreshLayout.setRefreshing(false);
+            }
+        });
 
         binding.headerLayout.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,10 +179,11 @@ public class StorageCargo extends AppCompatActivity {
                 binding.mawbGallery.flightNo.setText(selectedCargo.getFlightNumber());
                 binding.mawbGallery.mawbNo.setText(selectedCargo.getMawbNumber());
                 binding.mawbGallery.hawbNo.setText(selectedCargo.getHawbNumber());
-                binding.mawbGallery.flightClass.setText(selectedCargo.getClassdesc());
+                binding.mawbGallery.flightClass.setText(selectedCargo.getClassDesc());
                 binding.mawbGallery.pcs.setText(String.valueOf(selectedCargo.getActualPcs()));
 
                 viewModel.getCargoImages(StorageCargo.this, StorageCargo.this, binding, selectedCargo.getId());
+                System.out.println("IMAGES >>>>>>>>>>>>>>>>> " + images);
                 toShowLayout();
             }
         });
@@ -157,23 +213,23 @@ public class StorageCargo extends AppCompatActivity {
                 binding.cargoDetails.totalWeight.setText("");
                 binding.cargoDetails.cargoClass.setText(selectedCargo.getCargoStatus());
                 binding.cargoDetails.storagePersonnel.setText("");
-                binding.cargoDetails.storedItemPcs.setText(selectedCargo.getActualPcs());
-                binding.cargoDetails.rcvPcs.setText(selectedCargo.getActualPcs());
+//                binding.cargoDetails.storedItemPcs.setText(selectedCargo.getActualPcs());
+//                binding.cargoDetails.rcvPcs.setText(selectedCargo.getActualPcs());
                 binding.cargoDetails.rackName.setText(selectedCargo.getRackName());
                 binding.cargoDetails.layerName.setText(selectedCargo.getLayerName());
 
                 layout_id = 4;
 
 
-                viewModel.getRacks(StorageCargo.this,StorageCargo.this, binding);
-                viewModel.getLayers(StorageCargo.this,StorageCargo.this, binding);
+                viewModel.getRacks(StorageCargo.this, StorageCargo.this, binding);
+                viewModel.getLayers(StorageCargo.this, StorageCargo.this, binding);
 //                binding.cargoDetails.rackName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, viewModel.getRacks(StorageCargo.this,this, binding)));
 //                binding.cargoDetails.layerName.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, viewModel.getLayers(StorageCargo.this,this, binding)));
 
-                if (selectedCargo.getHawbNumber() == null){
-                    viewModel.getCargoDetails(StorageCargo.this,StorageCargo.this,binding,false,selectedCargo.getMawbNumber(), "");
-                }else{
-                    viewModel.getCargoDetails(StorageCargo.this,StorageCargo.this,binding,true,"", selectedCargo.getHawbNumber());
+                if (selectedCargo.getHawbNumber() == null) {
+                    viewModel.getCargoDetails(StorageCargo.this, StorageCargo.this, binding, false, selectedCargo.getMawbNumber(), "");
+                } else {
+                    viewModel.getCargoDetails(StorageCargo.this, StorageCargo.this, binding, true, "", selectedCargo.getHawbNumber());
                 }
                 toShowLayout();
             }
@@ -186,7 +242,6 @@ public class StorageCargo extends AppCompatActivity {
                 binding.mawbGallery.viewCargoImageLayout.setVisibility(View.VISIBLE);
                 binding.mawbGallery.listTitle.setVisibility(View.VISIBLE);
                 binding.mawbGallery.listView1.setVisibility(View.VISIBLE);
-
 
 
                 ImageListAdapter adapter = new ImageListAdapter(StorageCargo.this, R.layout.uploaded_image_line, uri);
@@ -214,7 +269,7 @@ public class StorageCargo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertsAndLoaders loaders = new AlertsAndLoaders();
-                loaders.showAlert(4,"Are you sure?","You want to update storage?", StorageCargo.this,saveCargoStorage);
+                loaders.showAlert(4, "Are you sure?", "You want to update storage?", StorageCargo.this, saveCargoStorage);
             }
         });
 
@@ -238,21 +293,21 @@ public class StorageCargo extends AppCompatActivity {
             }
         });
 
-        binding.cargoImagesLayout.picture1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                is_pic1 = true;
-                askCameraPermission();
-            }
-        });
+//        binding.cargoImagesLayout.picture1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                is_pic1 = true;
+//                askCameraPermission();
+//            }
+//        });
 
-        binding.cargoImagesLayout.picture2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                is_pic1 = false;
-                askCameraPermission();
-            }
-        });
+//        binding.cargoImagesLayout.picture2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                is_pic1 = false;
+//                askCameraPermission();
+//            }
+//        });
 
 
     }
@@ -303,15 +358,12 @@ public class StorageCargo extends AppCompatActivity {
 
         String imageFileName = timeStamp;
         cargoFname = imageFileName;
-        if (is_pic1) {
-            fnames[0] = cargoFname;
-        } else {
-            fnames[1] = cargoFname;
-        }
 
+//        added_images.setFileName(cargoFname);
+//        images.add(added_images);
 
         File storageDir = getCacheDir();
-        File image = File.createTempFile(imageFileName, ".png", storageDir);
+        File image = File.createTempFile(cargoFname, ".png", storageDir);
         return image;
     }
 
@@ -330,24 +382,35 @@ public class StorageCargo extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            docUri = imageUri;
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imageBitmap = Bitmap.createScaledBitmap(imageBitmap, newWidth, newHeight, true);
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
             bytes = stream.toByteArray();
-            if (is_pic1) {
-                uri.add(docUri);
-                binding.cargoImagesLayout.picture1.setImageURI(docUri);
-                binding.cargoImagesLayout.picture1.setBackground(null);
 
+            if (is_adding) {
+
+                picture.setImageURI(imageUri);
+                picture.setBackground(null);
+                uri.add(imageUri);
 
             } else {
-                uri.add(docUri);
-                binding.cargoImagesLayout.picture2.setImageURI(docUri);
-                binding.cargoImagesLayout.picture2.setBackground(null);
+                docUri = imageUri;
+                if (is_pic1) {
+                    uri.add(docUri);
+                    binding.cargoImagesLayout.picture1.setImageURI(docUri);
+                    binding.cargoImagesLayout.picture1.setBackground(null);
+
+
+                } else {
+                    uri.add(docUri);
+                    binding.cargoImagesLayout.picture2.setImageURI(docUri);
+                    binding.cargoImagesLayout.picture2.setBackground(null);
+                }
+                select_b64 = Base64.encodeToString(bytes, Base64.DEFAULT);
             }
 
-            select_b64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+
 //                btn_save1.setEnabled(viewModel.enabled_save_btn_dialog(form_name_of_docs, form_category_exposed_dropdown, select_b64));
 
 //            binding.cargoImagesLayout.picture1.setImageURI(imageUri);
@@ -362,6 +425,10 @@ public class StorageCargo extends AppCompatActivity {
 
     public void getStorage(List<StorageModel> storage) {
         this.storage = storage;
+    }
+
+    public void getSearchStorage(List<StorageModel> searchStorage) {
+        this.searchStorage = searchStorage;
     }
 
     public void getRacks(List<RackModel> racks) {
@@ -394,13 +461,13 @@ public class StorageCargo extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void perform() {
-           viewModel.saveRacks(StorageCargo.this,binding,uri,StorageCargo.this,
-                   binding.cargoDetails.rackName.getText().toString().trim(),
-                   binding.cargoDetails.layerName.getText().toString().trim(),
-                   selectedCargo.getRackUtilId(),
-                   binding.cargoDetails.mawbNo.getText().toString().trim(),
-                   binding.cargoDetails.hawbNo.getText().toString().trim(),0,
-                   binding.cargoDetails.flightNo.getText().toString().trim());
+            viewModel.saveRacks(StorageCargo.this, binding, uri,image1, StorageCargo.this,
+                    binding.cargoDetails.rackName.getText().toString().trim(),
+                    binding.cargoDetails.layerName.getText().toString().trim(),
+                    selectedCargo.getRackUtilId(),
+                    binding.cargoDetails.mawbNo.getText().toString().trim(),
+                    binding.cargoDetails.hawbNo.getText().toString().trim(), 0,
+                    binding.cargoDetails.flightNo.getText().toString().trim());
         }
 
     };
@@ -419,55 +486,73 @@ public class StorageCargo extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(StorageCargo.this);
         View mview = getLayoutInflater().inflate(R.layout.add_cargo_images_dialog, null);
         EditText remarks;
-        AutoCompleteTextView spinner_cargo;
-        ImageView picture;
         CardView btn_cancel;
         LinearLayout add_image;
         picture = mview.findViewById(R.id.picture);
-        spinner_cargo = mview.findViewById(R.id.sCargo);
+        cargoCondition = mview.findViewById(R.id.sCargo);
         remarks = mview.findViewById(R.id.remarks);
         btn_cancel = mview.findViewById(R.id.btn_cancel);
         add_image = mview.findViewById(R.id.add_image);
 
-
+        added_images = new CargoImagesModel();
 //        -- SET CARGO CONDITION IN DROP DOWN
-        spinner_cargo.setAdapter(new ArrayAdapter<>(StorageCargo.this, android.R.layout.simple_list_item_1, viewModel.getCargoConditionList(StorageCargo.this, StorageCargo.this)));
+        cargoCondition.setAdapter(new ArrayAdapter<>(StorageCargo.this, android.R.layout.simple_list_item_1, conditionList()));
 
-
-
-
-//        save_uld.setOnClickListener(new View.OnClickListener() {
+//        cargoCondition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
-//            public void onClick(View v) {
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+//                // Get the selected cargo condition ID
+//                cargoConditionId = id;
+//                cargo_text = cargoCondition.getText().toString().trim();
+//                // You can use this ID as needed
+//            }
 //
-//                List<MawbModel> mawbs = mawbList;
-//                AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();
-//
-//                uld_no_txt = uld_no.getText().toString().trim();
-//                System.out.println("uld_no_txt " + uld_no_txt);
-//
-//                if (uld_no.getText().toString() == "" || uld_no.getText().toString().equals("")){
-//                    alertsAndLoaders.showAlert(2, "", "Please enter ULD NUMBER", ReceiveCargo.this, null);
-//                }else if (uld_type.getText().toString().trim() == "" || uld_type.getText().toString().equals("")){
-//                    alertsAndLoaders.showAlert(2, "", "Please select ULD TYPE", ReceiveCargo.this, null);
-//                }else if (getCheckedMawbList().size() < 0){
-//                    alertsAndLoaders.showAlert(2,"","Please select MAWB NUMBER",ReceiveCargo.this, null);
-//                }else {
-////                    model.setUldNo(uld_no_txt);
-//                    saveUldNumberModel.setUldNumber(uld_no_txt);
-//                    model.setFlightNumber(selectedFlights.getFlightNumber());
-////                    model.setUldStatus(3);
-//                    model.setUldTypeId(getUldContainers());
-//                    saveUldNumberModel.setMawbs(mawb_arr());
-//                    saveUldNumberModel.setUlds(model);
-//
-//                    alertsAndLoaders.showAlert(4, "Are you sure?", "You want to add this ULD number?", ReceiveCargo.this, saveULD);
-//                    dialog.cancel();
-//                }
-//
-//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                // Handle situation where nothing is selected, if necessary
 //            }
 //        });
+
+//        cargoCondition.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                cargo_text = cargoCondition.getText().toString().trim();
+//            }
+//        });
+        picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                is_adding = true;
+                askCameraPermission();
+
+            }
+        });
+
+
+        add_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                added_images.setCargoCondition(cargoCondition.getText().toString().trim());
+                added_images.setCargoConditionId(getConditionId());
+                added_images.setRemarks(remarks.getText().toString());
+                added_images.setImageUri(imageUri);
+                images.add(added_images);
+                image1.add(added_images);
+                viewImg(StorageCargo.this, binding);
+                dialog.cancel();
+            }
+        });
+
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -483,5 +568,50 @@ public class StorageCargo extends AppCompatActivity {
         dialog.show();
     }
 
+
+    private void viewImg(Context context, ActivityStorageCargoBinding binding) {
+        try {
+            CargoImagesAdapter adapter1 = new CargoImagesAdapter(context, R.layout.store_cargo_images_line, images);
+            binding.mawbGallery.listView.setAdapter(adapter1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getImages(List<CargoImagesModel> images){
+        this.images = images;
+    }
+    public void getConditionList(List<CargoConditionModel> conditionModel){
+        this.conditionModel = conditionModel;
+    }
+
+    private String[] conditionList(){
+        String[] arr = new String[conditionModel.size()];
+        int count = 0;
+        System.out.println("CONDITION MODEL >>>>>> " + conditionModel.size());
+        for(CargoConditionModel model : conditionModel){
+            arr[count] = model.getCondition();
+            count++;
+        }
+        return arr;
+    }
+
+    private int getConditionId(){
+        for(CargoConditionModel model : conditionModel){
+            if(cargoCondition.getText().toString().equals(model.getCondition())){
+                return model.getId();
+            }
+        }
+        return 0;
+    }
+
+    private void viewData(Activity activity, ActivityStorageCargoBinding binding) {
+        try {
+            StorageCargoAdapter adapter = new StorageCargoAdapter(activity, R.layout.mawb_line_layout, searchStorage);
+            binding.mawbList.listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

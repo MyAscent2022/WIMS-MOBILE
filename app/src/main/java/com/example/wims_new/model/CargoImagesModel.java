@@ -1,5 +1,7 @@
 package com.example.wims_new.model;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 
 public class CargoImagesModel implements Serializable {
@@ -7,10 +9,11 @@ public class CargoImagesModel implements Serializable {
     long id;
     String filePath;
     String fileName;
-    int cargoConditionId;
+    long cargoConditionId;
     int cargoActivityLogId;
     String remarks;
     String cargoCondition;
+    Uri imageUri;
 
     public long getId() {
         return id;
@@ -36,11 +39,11 @@ public class CargoImagesModel implements Serializable {
         this.fileName = fileName;
     }
 
-    public int getCargoConditionId() {
+    public long getCargoConditionId() {
         return cargoConditionId;
     }
 
-    public void setCargoConditionId(int cargoConditionId) {
+    public void setCargoConditionId(long cargoConditionId) {
         this.cargoConditionId = cargoConditionId;
     }
 
@@ -66,5 +69,13 @@ public class CargoImagesModel implements Serializable {
 
     public void setCargoCondition(String cargoCondition) {
         this.cargoCondition = cargoCondition;
+    }
+
+    public Uri getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 }
