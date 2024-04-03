@@ -146,13 +146,15 @@ public class StorageCargoViewModel {
                         rackResp = response.body();
                         if (rackResp.getStatusCode() == 200) {
                             refRacks = rackResp.getData().getRefRacks();
-                            ar = new String[refRacks.size()];
-                            for (int i = 0; i < refRacks.size(); i++) {
-                                rack_arr.add(refRacks.get(i).getRackName());
-                                ar[i] = refRacks.get(i).getRackName();
-                            }
-
-                            binding.cargoDetails.rackName.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ar));
+                            activity.getRacksAndLayers(refRacks);
+//                            refRacks = rackResp.getData().getRefRacks();
+//                            ar = new String[refRacks.size()];
+//                            for (int i = 0; i < refRacks.size(); i++) {
+//                                rack_arr.add(refRacks.get(i).getRackName());
+//                                ar[i] = refRacks.get(i).getRackName();
+//                            }
+//
+//                            binding.cargoDetails.rackName.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ar));
                         } else {
                             alertsAndLoaders.showAlert(1, "", rackResp.getMessage(), context, activity.doNothing);
                         }
@@ -243,8 +245,8 @@ public class StorageCargoViewModel {
                         binding.cargoDetails.rcvPcs.setText(String.valueOf(rackDetails.getActualPcs()));
 
                         binding.cargoDetails.storedItemPcs.setText(String.valueOf(rackDetails.getActualPcs()));
-                        binding.cargoDetails.rackName.setText(rackDetails.getRackName());
-                        binding.cargoDetails.layerName.setText(rackDetails.getLayerName());
+                       // binding.cargoDetails.rackName.setText(rackDetails.getRackName());
+                       // binding.cargoDetails.layerName.setText(rackDetails.getLayerName());
 
                     } else {
                         alertsAndLoaders.showAlert(1, "", resp.getMessage(), context, activity.doNothing);
@@ -460,7 +462,7 @@ public class StorageCargoViewModel {
                         imgResp = response.body();
                         if (imgResp.getStatusCode() == 200) {
                             images = imgResp.getData().getImages();
-                            viewImg(context, binding);
+                            viewImg(context, binding,activity);
 
                             activity.getImages(images);
                         } else {
@@ -484,9 +486,9 @@ public class StorageCargoViewModel {
 
     }
 
-    private void viewImg(Context context, ActivityStorageCargoBinding binding) {
+    private void viewImg(Context context, ActivityStorageCargoBinding binding,StorageCargo activity) {
         try {
-            CargoImagesAdapter adapter1 = new CargoImagesAdapter(context, R.layout.store_cargo_images_line, images);
+            CargoImagesAdapter adapter1 = new CargoImagesAdapter(context, R.layout.store_cargo_images_line, images,activity);
             binding.mawbGallery.listView.setAdapter(adapter1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -499,7 +501,13 @@ public class StorageCargoViewModel {
 //        System.out.println("DETAILSSSS >>>>>>>>>>>>>>>>>>>> " + cargoImagesDetails);
 
         CargoImagesRequestModel req = new CargoImagesRequestModel();
-        req.setImagesEntity(images);
+        List<CargoImagesModel> list = new ArrayList<>();
+        for(CargoImagesModel m:images){
+            if(m.isToAddImage()){
+                list.add(m);
+            }
+        }
+        req.setImagesEntity(list);
 
         Gson gson = new Gson();
         String list_string = gson.toJson(req);
@@ -540,7 +548,6 @@ public class StorageCargoViewModel {
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.e("Error:", t.getMessage());
-
                 System.out.println("Check your connection");
                 Log.e("Error:", t.getMessage());
                 AlertsAndLoaders alertsAndLoaders = new AlertsAndLoaders();

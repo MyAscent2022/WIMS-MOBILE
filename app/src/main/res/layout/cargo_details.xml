@@ -6,6 +6,14 @@
     android:orientation="vertical"
     android:layout_margin="10dp">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_gravity="center"
@@ -274,8 +282,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:padding="@dimen/_5sdp"
-                android:layout_marginTop="20dp">
+                android:padding="@dimen/_5sdp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -294,34 +301,6 @@
                     android:layout_marginTop="5dp"
                     android:inputType="number"
                     android:fontFamily="@font/manrope"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:text="RACK NAME:"
-                    android:textColor="#01256D"
-                    android:fontFamily="@font/manrope"
-                    android:layout_marginTop="20dp"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_50sdp"
-                    android:hint="Select Rack Name"
-                    android:textColorHint="@color/placeholder"
-                    app:errorEnabled="true"
-                    app:hintTextColor="@color/placeholder"
-                    app:placeholderTextColor="@color/placeholder">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/rack_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
-                        android:inputType="textCapWords"
-                        android:maxLength="100"
-                        android:textColor="@color/black" />
-                </com.google.android.material.textfield.TextInputLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -334,7 +313,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_50sdp"
+                    android:layout_height="wrap_content"
                     android:hint="Select Layer Name"
                     android:textColorHint="@color/placeholder"
 
@@ -345,11 +324,39 @@
                     <AutoCompleteTextView
                         android:id="@+id/layer_name"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
-                        android:inputType="textCapWords"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
                         android:maxLength="100"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:text="RACK NAME:"
+                    android:textColor="#01256D"
+                    android:fontFamily="@font/manrope"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Rack Name"
+                    android:textColorHint="@color/placeholder"
+                    app:errorEnabled="true"
+                    app:hintTextColor="@color/placeholder"
+                    app:placeholderTextColor="@color/placeholder">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/rack_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:maxLength="100"
+
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
 
 
             </LinearLayout>
@@ -406,5 +413,6 @@
 
 
     </LinearLayout>
-
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

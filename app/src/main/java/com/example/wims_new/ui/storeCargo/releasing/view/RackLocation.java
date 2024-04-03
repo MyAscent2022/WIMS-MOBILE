@@ -19,6 +19,7 @@ import com.example.wims_new.ui.storeCargo.menu.StoreCargoMenu;
 import com.example.wims_new.ui.storeCargo.releasing.view.Model.ReleaseCargoModel;
 import com.example.wims_new.ui.storeCargo.releasing.view.viewModel.RackLocationViewModel;
 import com.example.wims_new.utils.FunctionInterface;
+import com.example.wims_new.utils.SharedPref;
 
 import java.util.List;
 
@@ -45,6 +46,8 @@ public class RackLocation extends AppCompatActivity {
         viewModel = new RackLocationViewModel();
         viewModel.getCargoForReleasing(RackLocation.this,binding, this, viewModel);
 
+        SharedPref sharedPref = new SharedPref();
+        binding.locatorId.setText(sharedPref.readPrefString(this,sharedPref.USERNAME));
         eventHandler();
 
     }
